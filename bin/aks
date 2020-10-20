@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+require('yargs/yargs')(process.argv.slice(2))
+    .commandDir('cmds')
+    .demandCommand()
+    .version()
+    .completion()
+    .options({
+        'resource-group': {
+            alias: 'r',
+            describe: 'Resource Group name'
+        },
+        'cluster': {
+            alias: 'c',
+            describe: 'Name of the cluster. If not specified current kubectl context will be used'
+        },
+        'subscription': {
+            alias: 's',
+            describe: 'Subscription id'
+        }
+    })
+    .help('help')
+    .argv
