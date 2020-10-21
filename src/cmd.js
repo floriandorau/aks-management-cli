@@ -5,10 +5,10 @@ const exec = function (cmd, args, opts = {}) {
     if (result.status === 0) {
         return result.stdout.toString('utf8');
     } else {
-        logger.error('stderr:', result.stderr.toString('utf8'));
-        logger.error('stdout:', result.stdout.toString('utf8'));
+        console.log('stderr:', result.stderr.toString('utf8'));
+        console.log('stdout:', result.stdout.toString('utf8'));
         throw new Error('Command failed!');
     }
-}
+};
 
 module.exports = { exec };

@@ -9,7 +9,7 @@ const listIpRange = ({ name, resourceGroup, subscription }, options = { debug: t
         '--subscription', subscription,
     ];
 
-    return JSON.parse(utils.cmd('az', argsAccount, options));
+    return JSON.parse(exec('az', argsAccount, options));
 };
 
 const addIp = (ip, { name, resourceGroup, subscription }, options = { debug: true }) => {
@@ -22,7 +22,7 @@ const addIp = (ip, { name, resourceGroup, subscription }, options = { debug: tru
         '--subscription', subscription,
     ];
 
-    return JSON.parse(utils.cmd('az', argsAccount, options));
+    return JSON.parse(exec('az', argsAccount, options));
 };
 
 module.exports = { addIp, listIpRange };

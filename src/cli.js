@@ -10,61 +10,61 @@ const addIp = function (ip, { cluster, resourceGroup, subscription }) {
         console.log(`Adding ${ip} to azure ip whitelist`);
         az.addIp(ip, _buildOptions({ cluster, resourceGroup, subscription }));
     } catch (err) {
-        console.error('Error while adding ip address', err)
+        console.error('Error while adding ip address', err);
     }
-}
+};
 
 const addCurrentIp = function ({ cluster, resourceGroup, subscription }) {
     try {
         const currentIp = _getCurrentIp();
-        az.addIp(currentIp, _buildOptions({ cluster, resourceGroup, subscription }))
+        az.addIp(currentIp, _buildOptions({ cluster, resourceGroup, subscription }));
     } catch (err) {
-        console.error('Error while adding current ip address', err)
+        console.error('Error while adding current ip address', err);
     }
-}
+};
 
 const getCurrentContext = function () {
     try {
         const clusterContext = _getCurrentCluster();
         console.log(`Your current cluster context is: '${clusterContext}'`);
     } catch (err) {
-        console.error('Error while reading cluster context', err)
+        console.error('Error while reading cluster context', err);
     }
-}
+};
 
 const showCurrentIp = function () {
     try {
         const ip = _getCurrentIp();
         console.log(`Your current ip address is: '${ip}'`);
     } catch (err) {
-        console.error('Error while gathering ip address', err)
+        console.error('Error while gathering ip address', err);
     }
-}
+};
 
 const listIpRange = function ({ cluster, resourceGroup, subscription }) {
     try {
-        az.listIpRange(_buildOptions({ cluster, resourceGroup, subscription }))
+        az.listIpRange(_buildOptions({ cluster, resourceGroup, subscription }));
     } catch (err) {
-        console.error('Error while gathering ip address', err)
+        console.error('Error while gathering ip address', err);
     }
-}
+};
 
 const listSubscriptions = function () {
     try {
         if (config.subscriptions) {
             config.subscriptions.forEach(subscription => console.log(subscription));
         } else {
-            console.log('No subscriptions configured')
+            console.log('No subscriptions configured');
         }
     } catch (err) {
-        console.error('Error while loading configured subscriptions', err)
+        console.error('Error while loading configured subscriptions', err);
     }
-}
+};
 
 const addSubscription = function (name, subscriptionId) {
     try {
         if (config && config.subscriptions) {
-            const subscription = config.subscriptions.filter(subsc => subsc.hasOwnProperty(name));
+            const subscription = config.subscriptions.filter(subsc => name in subsc)[0];
             if (subscription) {
                 console.log(`Subscription with name '${name}' already configured: ${subscriptionId}`);
             } else {
@@ -73,19 +73,19 @@ const addSubscription = function (name, subscriptionId) {
         } else {
             config = {
                 subscriptions: { [name]: subscriptionId }
-            }
+            };
         }
         writeConfig(config);
     } catch (err) {
-        console.error('Error while loading addding subscription', err)
+        console.error('Error while loading addding subscription', err);
     }
-}
+};
 
 const setActiveSubscription = function (name) {
     try {
         if (config && config.subscriptions) {
-            const subscription = config.subscriptions.filter(subsc => subsc.hasOwnProperty(name))[0];
-            console.log(subscription)
+            const subscription = config.subscriptions.filter(subsc => name in subsc)[0];
+            console.log(subscription);
             if (subscription) {
                 config.activeSubscription = subscription;
                 console.log(`Setting subscription '${JSON.stringify(subscription)}' as current active subscription`);
@@ -98,21 +98,21 @@ const setActiveSubscription = function (name) {
         }
 
     } catch (err) {
-        console.error('Error while setting active subscription', err)
+        console.error('Error while setting active subscription', err);
     }
-}
+};
 
 const activeSubscription = function () {
     try {
         if (config.activeSubscription) {
             console.log(`Current active subscription '${JSON.stringify(config.activeSubscription)}'`);
         } else {
-            console.log('No active subscription configured')
+            console.log('No active subscription configured');
         }
     } catch (err) {
-        console.error('Error while loading configured subscriptions', err)
+        console.error('Error while loading configured subscriptions', err);
     }
-}
+};
 
 const _buildOptions = function ({ cluster, resourceGroup, subscription }) {
     const currentClusterContext = _getCurrentCluster();
@@ -121,16 +121,16 @@ const _buildOptions = function ({ cluster, resourceGroup, subscription }) {
         resourceGroup: resourceGroup ?? currentClusterContext,
         subscription
     };
-}
+};
 
 const _getCurrentIp = function () {
-    const result = exec('curl', ['http://ipinfo.io/json'])
+    const result = exec('curl', ['http://ipinfo.io/json']);
     return JSON.parse(result).ip;
-}
+};
 
 const _getCurrentCluster = function () {
     const currentContext = exec('kubectl', ['config', 'current-context']);
     return currentContext;
-}
+};
 
-module.exports = { activeSubscription, getCurrentContext, addSubscription, addIp, addCurrentIp, showCurrentIp, listIpRange, listSubscriptions, setActiveSubscription }
+module.exports = { activeSubscription, getCurrentContext, addSubscription, addIp, addCurrentIp, showCurrentIp, listIpRange, listSubscriptions, setActiveSubscription };

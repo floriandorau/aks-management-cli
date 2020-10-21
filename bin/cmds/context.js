@@ -1,9 +1,8 @@
 const { getCurrentContext } = require('../../src/cli');
 
-exports.command = 'context'
+exports.command = 'context';
+exports.desc = 'Prints current kubectl context';
 
-exports.desc = 'Prints current kubectl context'
+exports.builder = () => { };
 
-exports.builder = function (yargs) { }
-
-exports.handler = function (argv) { getCurrentContext() }
+exports.handler = () => getCurrentContext();
