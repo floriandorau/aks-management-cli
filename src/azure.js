@@ -9,20 +9,27 @@ const listIpRange = ({ name, resourceGroup, subscription }, options = { debug: t
         '--subscription', subscription,
     ];
 
-    return JSON.parse(exec('az', argsAccount, options));
+    const result = JSON.parse(exec('az', argsAccount, options));
+    return result?.apiServerAccessProfile?.authorizedIpRanges;
 };
 
 const addIp = (ip, { name, resourceGroup, subscription }, options = { debug: true }) => {
+    console.log(ip);
+    const ipRange = listIpRange({ name, resourceGroup, subscription });
+
+    const authorizedIpRanges = new Set([ipRange, ip]);
+
     const argsAccount = [
         'aks',
         'update',
-        '--api-server-authorized-ip-ranges', ip,
+        '--api-server-authorized-ip-ranges', Array.from(authorizedIpRanges).join(','),
         '--name', name,
         '--resource-group', resourceGroup,
         '--subscription', subscription,
     ];
 
-    return JSON.parse(exec('az', argsAccount, options));
+    const result = JSON.parse(exec('az', argsAccount, options));
+    console.log(result);
 };
 
 module.exports = { addIp, listIpRange };

@@ -1,4 +1,4 @@
-const { addIp } = require('../../../src/cli');
+const { addIp } = require('../../src/cli');
 
 exports.command = 'add <ip>';
 exports.desc = 'Add <ip> to AKS specified ip-range';

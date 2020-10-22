@@ -1,4 +1,4 @@
-const { listSubscriptions } = require('../../../src/cli');
+const { listSubscriptions } = require('../../src/cli');
 
 exports.command = 'list';
 exports.desc = 'Lists all your confifgured subscriptions';

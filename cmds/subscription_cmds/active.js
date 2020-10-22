@@ -1,4 +1,4 @@
-const { activeSubscription } = require('../../../src/cli');
+const { activeSubscription } = require('../../src/cli');
 
 exports.command = 'active';
 exports.desc = 'Prints your current active subscription';

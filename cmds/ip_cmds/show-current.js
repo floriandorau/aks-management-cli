@@ -1,4 +1,4 @@
-const { showCurrentIp } = require('../../../src/cli');
+const { showCurrentIp } = require('../../src/cli');
 
 exports.command = 'show-current';
 exports.desc = 'Prints your current public ip address';
