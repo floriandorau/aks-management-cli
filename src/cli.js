@@ -1,5 +1,6 @@
-const { exec } = require('./cmd');
 const az = require('./azure');
+const isIp = require('is-ip');
+const { exec } = require('./cmd');
 
 const { readConfig, writeConfig } = require('./config');
 
@@ -7,9 +8,14 @@ let config = readConfig();
 
 const addIp = function (ip, { cluster, resourceGroup, subscription }) {
     try {
-        console.log(`Adding ${ip} to azure ip whitelist`);
-        az.addIp(ip, _buildOptions({ cluster, resourceGroup, subscription }));
-        console.log(`Ip ${ip} added to authorrized ip range`);
+        if (isIp.v4(ip)) {
+            console.log(`Adding ${ip} to azure ip whitelist`);
+            az.addIp(ip, _buildOptions({ cluster, resourceGroup, subscription }));
+            console.log(`Ip ${ip} added to authorrized ip range`);
+        } else {
+            console.log(`'${ip}' is  no valid IPv4 address.`);
+        }
+
     } catch (err) {
         console.error('Error while adding ip address', err);
     }
