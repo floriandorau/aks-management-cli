@@ -8,8 +8,8 @@ require('yargs/yargs')(process.argv.slice(2))
         'debug': {
             alias: 'd',
             describe: 'Debug mode',
-
         }
     })
+    .wrap(100)
     .help('help')
     .argv;
