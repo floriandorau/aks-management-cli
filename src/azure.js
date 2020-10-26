@@ -15,10 +15,13 @@ const listIpRange = ({ name, resourceGroup, subscription }, options = { debug: t
 
 const addIp = (ip, { name, resourceGroup, subscription }, options = { debug: true }) => {
     console.log(ip);
-    const ipRange = listIpRange({ name, resourceGroup, subscription });
+    let ipRange = listIpRange({ name, resourceGroup, subscription });
 
-    const authorizedIpRanges = new Set([ipRange, ip]);
+    // It's not allowed to add ip range when '0.0.0.0/32' is set.
+    ipRange = ipRange.filter(range => range !== '0.0.0.0/32');
+    const authorizedIpRanges = new Set([...ipRange, ip]);
 
+    console.log(authorizedIpRanges);
     const argsAccount = [
         'aks',
         'update',
