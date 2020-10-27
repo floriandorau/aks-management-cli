@@ -1,8 +1,17 @@
 {
-  "name": "aks-cluster-mgmt",
-  "version": "1.0.0",
+  "name": "@floriandorau/aks-management-cli",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
+  "homepage": "https://github.com/floriandorau/aks-management-cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/floriandorau/aks-management-cli.git"
+  },
+  "author": "floriandorau",
+  "bin": {
+    "aks": "./bin/aks"
+  },
   "dependencies": {
     "is-ip": "^3.1.0",
     "public-ip": "^4.0.2",

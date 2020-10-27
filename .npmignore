@@ -1,0 +1,9 @@
+.gitignore
+
+.eslintignore
+.eslintrc.yml
+
+.travis.yml
+
+# Output of 'npm pack'
+*.tgz
