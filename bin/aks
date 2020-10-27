@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+const termSize = require('term-size');
+
 require('yargs/yargs')(process.argv.slice(2))
     .commandDir('../cmds')
     .demandCommand()
@@ -10,6 +12,6 @@ require('yargs/yargs')(process.argv.slice(2))
             describe: 'Debug mode',
         }
     })
-    .wrap(100)
+    .wrap(termSize().columns)
     .help('help')
     .argv;
