@@ -1,7 +1,8 @@
 const az = require('./azure');
 const isIp = require('is-ip');
-const { exec } = require('./cmd');
+const publicIp = require('public-ip');
 
+const { exec } = require('./cmd');
 const { readConfig, writeConfig } = require('./config');
 
 let config = readConfig();
@@ -21,9 +22,9 @@ const addIp = function (ip, { cluster, resourceGroup, subscription }) {
     }
 };
 
-const addCurrentIp = function ({ cluster, resourceGroup, subscription }) {
+const addCurrentIp = async function ({ cluster, resourceGroup, subscription }) {
     try {
-        const currentIp = _getCurrentIp();
+        const currentIp = await publicIp.v4();
         az.addIp(currentIp, _buildOptions({ cluster, resourceGroup, subscription }));
         console.log(`Ip ${currentIp} added to authorrized ip range`);
     } catch (err) {
@@ -40,9 +41,9 @@ const getCurrentContext = function () {
     }
 };
 
-const showCurrentIp = function () {
+const showCurrentIp = async function () {
     try {
-        const ip = _getCurrentIp();
+        const ip = await publicIp.v4();
         console.log(`Your current ip address is: '${ip}'`);
     } catch (err) {
         console.error('Error while gathering your current ip address', err);
@@ -110,7 +111,6 @@ const setActiveSubscription = function (name) {
     try {
         if (config && config.subscriptions) {
             const subscription = config.subscriptions.filter(subsc => name in subsc)[0];
-            console.log(subscription);
             if (subscription) {
                 config.activeSubscription = subscription;
                 writeConfig(config);
@@ -146,11 +146,6 @@ const _buildOptions = function ({ cluster, resourceGroup, subscription }) {
         resourceGroup: resourceGroup ?? currentClusterContext,
         subscription: config.activeSubscription ? Object.values(config.activeSubscription)[0] : subscription
     };
-};
-
-const _getCurrentIp = function () {
-    const result = exec('curl', ['http://ipinfo.io/json']);
-    return JSON.parse(result).ip;
 };
 
 const _getCurrentCluster = function () {
