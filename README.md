@@ -7,18 +7,17 @@
 ## Usage
 
 ```bash
-aks --help
+$ aks --help
 
 aks <command>
 
 Kommandos:
   aks current-context         Prints your current configured kubectl context
   aks ip <command>            Manage AKS authorized ip range
-  aks subscription <command>  Manage subscriptions
+  aks subscription <command>  Manage stored Azure subscriptions
   aks completion              generate completion script
 
 Optionen:
-      --version  Version anzeigen                                                                                                                                                                  [boolean]
-  -d, --debug    Debug mode
-      --help     Hilfe anzeigen
+  --version  Version anzeigen                                                                                                                                                                                                 [boolean]
+  --help     Hilfe anzeigen
 ```
