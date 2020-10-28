@@ -20,23 +20,23 @@ const writeConfigFile = function (path, config) {
 };
 
 const readConfig = function () {
-    const configPath = join(APP_PATH, CONFIG_FILE_NAME);
-
-    if (!existsSync(configPath)) {
-        throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
-    }
-
+    const configPath = _getConfigPath();
     return readConfigFile(configPath);
 };
 
 const writeConfig = function (config) {
+    const configPath = _getConfigPath();
+    writeConfigFile(configPath, config);
+};
+
+const _getConfigPath = function () {
     const configPath = join(APP_PATH, CONFIG_FILE_NAME);
 
     if (!existsSync(configPath)) {
         throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
     }
 
-    writeConfigFile(configPath, config);
+    return configPath;
 };
 
 module.exports = { readConfig, writeConfig };

@@ -6,12 +6,6 @@ require('yargs/yargs')(process.argv.slice(2))
     .demandCommand()
     .version()
     .completion()
-    .options({
-        'debug': {
-            alias: 'd',
-            describe: 'Run in debug mode',
-        }
-    })
     .wrap(termSize().columns)
     .help('help')
     .argv;

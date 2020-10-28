@@ -31,14 +31,14 @@ const addIp = async (ip, options) => {
 };
 
 const removeIp = async (ip, options) => {
-    let remoteAuthorizedIpRanges = fetchAuthorizedIpRanges(options);
+    let remoteAuthorizedIpRanges = await fetchAuthorizedIpRanges(options);
 
     const authorizedIpRanges = remoteAuthorizedIpRanges.filter(range => range !== `${ip}/32`);
     if (authorizedIpRanges.length === 0) {
         authorizedIpRanges.push(DEFAULT_AUTHORIZED_IP_RANGE);
+        console.log(`No authorized ip-range left. Added deafult ip-range [${DEFAULT_AUTHORIZED_IP_RANGE}] for security reasons`);
     }
 
-    console.log(`Updating authorized ip-range to ${authorizedIpRanges}`);
     return _updateAuthorizedIpRanges(authorizedIpRanges, options);
 };
 
@@ -59,8 +59,8 @@ const _parseResponse = (response) => {
     return result?.apiServerAccessProfile?.authorizedIpRanges || [];
 };
 
-const _runAz = async (args, { debug }) => {
-    const response = await exec('az', args, { debug });
+const _runAz = async (args, options = { debug: false }) => {
+    const response = await exec('az', args, options);
     if (!response) {
         throw new Error('no valid response from cluster');
     }

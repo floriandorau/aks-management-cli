@@ -1,9 +1,14 @@
-const { addCurrentIp } = require('../../src/cli');
+const publicIp = require('public-ip');
+
+const { addIp } = require('../../src/cli');
 
 exports.command = 'add-current';
-exports.desc = 'Adds your current public ip to AKS authorized ip-range';
+exports.desc = 'Adds your current public ip to AKS authorized ip-ranges';
 exports.builder = () => { };
-exports.handler = function (argv) {
+exports.handler = async (argv) => {
+    const currentIp = await publicIp.v4();
+    console.log(`Will add your public ip address '${currentIp}' to authorized ip ranges`);
+
     const { cluster, resourceGroup, subscription } = argv;
-    addCurrentIp({ cluster, resourceGroup, subscription });
+    addIp(currentIp, { cluster, resourceGroup, subscription });
 };
