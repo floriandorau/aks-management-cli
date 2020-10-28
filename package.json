@@ -20,7 +20,7 @@
     "yargs": "^16.1.0"
   },
   "scripts": {
-    "lint": "eslint ./src ./bin"
+    "lint": "eslint ./src ./bin/aks"
   },
   "devDependencies": {
     "eslint": "^7.11.0"
