@@ -1,37 +1,71 @@
 const { exec } = require('./cmd');
 
-const listIpRange = ({ name, resourceGroup, subscription }, options = { debug: true }) => {
-    const argsAccount = [
+const DEFAULT_AUTHORIZED_IP_RANGE = '0.0.0.0/32';
+
+const fetchAuthorizedIpRanges = async ({ name, resourceGroup, subscription }) => {
+    return _runAz([
         'aks',
         'show',
         '--name', name,
         '--resource-group', resourceGroup,
         '--subscription', subscription,
-    ];
-
-    const result = JSON.parse(exec('az', argsAccount, options));
-    return result?.apiServerAccessProfile?.authorizedIpRanges;
+    ]);
 };
 
-const addIp = (ip, { name, resourceGroup, subscription }, options = { debug: true }) => {
+const addIp = async (ip, options) => {
+    let authorizedIpRanges = await fetchAuthorizedIpRanges(options);
 
-    let ipRange = listIpRange({ name, resourceGroup, subscription });
+    // Transform ip to CIDR notation
+    const ipCidr = `${ip}/32`;
+
+    if (authorizedIpRanges.includes(ipCidr)) {
+        console.log(`${ip} is already set as authorized ip ranges`);
+        return authorizedIpRanges;
+    }
 
     // It's not allowed to add ip range when '0.0.0.0/32' is set.
-    ipRange = ipRange.filter(range => range !== '0.0.0.0/32');
-    const authorizedIpRanges = new Set([...ipRange, ip]);
+    authorizedIpRanges = authorizedIpRanges.filter(range => range !== DEFAULT_AUTHORIZED_IP_RANGE);
+    const newAuthorizedIpRanges = new Set([...authorizedIpRanges, ipCidr]);
 
-    const argsAccount = [
+    return _updateAuthorizedIpRanges(newAuthorizedIpRanges, options);
+};
+
+const removeIp = async (ip, options) => {
+    let remoteAuthorizedIpRanges = fetchAuthorizedIpRanges(options);
+
+    const authorizedIpRanges = remoteAuthorizedIpRanges.filter(range => range !== `${ip}/32`);
+    if (authorizedIpRanges.length === 0) {
+        authorizedIpRanges.push(DEFAULT_AUTHORIZED_IP_RANGE);
+    }
+
+    console.log(`Updating authorized ip-range to ${authorizedIpRanges}`);
+    return _updateAuthorizedIpRanges(authorizedIpRanges, options);
+};
+
+const _updateAuthorizedIpRanges = async (authorizedIpRanges, { name, resourceGroup, subscription }) => {
+    console.log(`Updating authorized ip-range to ${authorizedIpRanges}`);
+    return _runAz([
         'aks',
         'update',
         '--api-server-authorized-ip-ranges', Array.from(authorizedIpRanges).join(','),
         '--name', name,
         '--resource-group', resourceGroup,
         '--subscription', subscription,
-    ];
-
-    const result = JSON.parse(exec('az', argsAccount, options));
-    console.log(result);
+    ]);
 };
 
-module.exports = { addIp, listIpRange };
+const _parseResponse = (response) => {
+    const result = JSON.parse(response);
+    return result?.apiServerAccessProfile?.authorizedIpRanges || [];
+};
+
+const _runAz = async (args, { debug }) => {
+    const response = await exec('az', args, { debug });
+    if (!response) {
+        throw new Error('no valid response from cluster');
+    }
+
+    return _parseResponse(response);
+};
+
+module.exports = { addIp, removeIp, fetchAuthorizedIpRanges };

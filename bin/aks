@@ -9,7 +9,7 @@ require('yargs/yargs')(process.argv.slice(2))
     .options({
         'debug': {
             alias: 'd',
-            describe: 'Debug mode',
+            describe: 'Run in debug mode',
         }
     })
     .wrap(termSize().columns)

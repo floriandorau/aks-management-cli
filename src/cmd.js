@@ -1,18 +1,28 @@
 const child_process = require('child_process');
 
 const exec = (cmd, args, options = { debug: false }) => {
-    if (options.debug) {
-        console.debug(args);
-    }
+    const stdoutData = [];
+    return new Promise((resolve, reject) => {
+        if (options.debug) {
+            console.debug(args);
+        }
 
-    const result = child_process.spawnSync(cmd, args);
+        const spawnedProcess = child_process.spawn(cmd, args);
 
-    if (result.status !== 0) {
-        throw new Error(result.stderr.toString('utf8'));
-    }
+        spawnedProcess.stdout.on('data', data => {
+            stdoutData.push(data);
+        });
 
-    return result.stdout.toString('utf8');
+        spawnedProcess.on('error', err => reject(err));
 
+        spawnedProcess.on('close', code => {
+            if (options.debug) {
+                console.debug(`processed close with code ${code}`);
+            }
+
+            resolve(Buffer.concat(stdoutData).toString('utf8'));
+        });
+    });
 };
 
 module.exports = { exec };

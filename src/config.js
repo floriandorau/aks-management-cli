@@ -21,7 +21,7 @@ const writeConfigFile = function (path, config) {
 
 const readConfig = function () {
     const configPath = join(APP_PATH, CONFIG_FILE_NAME);
-    console.log(`Reading config from path '${configPath}'`);
+
     if (!existsSync(configPath)) {
         throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
     }
@@ -31,7 +31,7 @@ const readConfig = function () {
 
 const writeConfig = function (config) {
     const configPath = join(APP_PATH, CONFIG_FILE_NAME);
-    console.log(`Writing config to path '${configPath}'`);
+
     if (!existsSync(configPath)) {
         throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
     }

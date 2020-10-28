@@ -3,6 +3,7 @@ exports.desc = 'Manage AKS authorized ip range';
 exports.builder = (yargs) =>
     yargs
         .commandDir('ip_cmds')
+        .usage('Usage: $0 ip <command> [options]')
         .options({
             'resource-group': {
                 alias: 'r',
