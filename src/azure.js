@@ -36,18 +36,19 @@ const removeIp = async (ip, options) => {
     const authorizedIpRanges = remoteAuthorizedIpRanges.filter(range => range !== `${ip}/32`);
     if (authorizedIpRanges.length === 0) {
         authorizedIpRanges.push(DEFAULT_AUTHORIZED_IP_RANGE);
-        console.log(`No authorized ip-range left. Added deafult ip-range [${DEFAULT_AUTHORIZED_IP_RANGE}] for security reasons`);
+        console.log(`No authorized ip-range left. Will set deafult authorized ip-range for security reasons [${DEFAULT_AUTHORIZED_IP_RANGE}] `);
     }
 
     return _updateAuthorizedIpRanges(authorizedIpRanges, options);
 };
 
 const _updateAuthorizedIpRanges = async (authorizedIpRanges, { name, resourceGroup, subscription }) => {
-    console.log(`Updating authorized ip-range to ${authorizedIpRanges}`);
+    const ipRanges = Array.from(authorizedIpRanges).join(',');
+    console.log(`Updating authorized ip-ranges to ${ipRanges}`);
     return _runAz([
         'aks',
         'update',
-        '--api-server-authorized-ip-ranges', Array.from(authorizedIpRanges).join(','),
+        '--api-server-authorized-ip-ranges', ipRanges,
         '--name', name,
         '--resource-group', resourceGroup,
         '--subscription', subscription,

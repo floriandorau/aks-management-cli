@@ -133,7 +133,6 @@ const _getCurrentCluster = async function () {
 
 
 const _validateIp = function (ip) {
-    console.log(ip)
     if (!isIp.v4(ip)) {
         throw new Error(`'${ip}' is not a valid IPv4 address.`);
     }
