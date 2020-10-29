@@ -1,4 +1,4 @@
-const { exec } = require('./cmd');
+const { exec } = require('./util/cmd');
 
 const DEFAULT_AUTHORIZED_IP_RANGE = '0.0.0.0/32';
 

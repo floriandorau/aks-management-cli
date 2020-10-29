@@ -1,10 +1,8 @@
 const az = require('./azure');
 const isIp = require('is-ip');
 
-const { exec } = require('./cmd');
-const { readConfig, writeConfig } = require('./config');
-
-let config = readConfig();
+const { exec } = require('./util/cmd');
+const { readConfig } = require('./util/config');
 
 const addIp = async function (ip, { cluster, resourceGroup, subscription }) {
     _validateIp(ip);
@@ -37,87 +35,8 @@ const listIpRange = async function ({ cluster, resourceGroup, subscription }) {
         .catch(err => console.error('Error while list ip range', err));
 };
 
-const listSubscriptions = function () {
-    try {
-        if (config.subscriptions) {
-            config.subscriptions.forEach(subscription => console.log(subscription));
-        } else {
-            console.log('No subscriptions configured');
-        }
-    } catch (err) {
-        console.error('Error while loading configured subscriptions', err);
-    }
-};
-
-const addSubscription = function (name, subscriptionId) {
-    try {
-        if (config && config.subscriptions) {
-            const subscription = config.subscriptions.filter(subsc => name in subsc)[0];
-            if (subscription) {
-                console.log(`Subscription with name '${name}' already configured: ${subscriptionId}`);
-            } else {
-                config.subscriptions.push({ [name]: subscriptionId });
-            }
-        } else {
-            config = {
-                subscriptions: { [name]: subscriptionId }
-            };
-        }
-        writeConfig(config);
-    } catch (err) {
-        console.error('Error while adding subscription', err);
-    }
-};
-
-const removeSubscription = function (name) {
-    try {
-        if (config && config.subscriptions) {
-            const subscriptions = config.subscriptions.filter(subsc => !(name in subsc));
-            config.subscriptions = subscriptions;
-
-            if (config.activeSubscription && name in config.activeSubscription) {
-                config.activeSubscription = null;
-            }
-        }
-        writeConfig(config);
-    } catch (err) {
-        console.error('Error while removing subscription', err);
-    }
-};
-
-const setActiveSubscription = function (name) {
-    try {
-        if (config && config.subscriptions) {
-            const subscription = config.subscriptions.filter(subsc => name in subsc)[0];
-            if (subscription) {
-                config.activeSubscription = subscription;
-                writeConfig(config);
-                console.log(`Set '${JSON.stringify(subscription)}' as active subscription`);
-            } else {
-                console.log(`No subscription configured with '${name}'. Try to add a subscription first`);
-            }
-        } else {
-            console.log('No subscriptions configured. Try to add a subscription first');
-        }
-
-    } catch (err) {
-        console.error('Error while setting active subscription', err);
-    }
-};
-
-const activeSubscription = function () {
-    try {
-        if (config.activeSubscription) {
-            console.log(`Current active subscription '${JSON.stringify(config.activeSubscription)}'`);
-        } else {
-            console.log('No active subscription configured');
-        }
-    } catch (err) {
-        console.error('Error while loading configured subscriptions', err);
-    }
-};
-
 const _buildClusterOptions = async function ({ cluster, resourceGroup, subscription }) {
+    const config = readConfig();
     const currentClusterContext = await _getCurrentCluster();
     return {
         name: cluster ?? currentClusterContext,
@@ -138,14 +57,4 @@ const _validateIp = function (ip) {
     }
 };
 
-module.exports = {
-    activeSubscription,
-    getCurrentContext,
-    addSubscription,
-    addIp,
-    listIpRange,
-    listSubscriptions,
-    setActiveSubscription,
-    removeSubscription,
-    removeIp
-};
+module.exports = { getCurrentContext, addIp, listIpRange, removeIp };

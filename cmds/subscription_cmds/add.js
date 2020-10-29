@@ -1,9 +1,6 @@
-const { addSubscription } = require('../../src/cli');
+const { add } = require('../../src/subscription');
 
 exports.command = 'add <name> <subscription-id>';
 exports.desc = 'Add <subscription-id> to config with <name>';
 exports.builder = () => { };
-exports.handler = (argv) => {
-    const { name, subscriptionId } = argv;
-    addSubscription(name, subscriptionId);
-};
+exports.handler = (argv) => add(argv.name, argv.subscriptionId);

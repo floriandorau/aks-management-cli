@@ -1,6 +1,6 @@
-const { activeSubscription } = require('../../src/cli');
+const { getActive } = require('../../src/subscription');
 
 exports.command = 'active';
 exports.desc = 'Prints your current active subscription';
 exports.builder = () => { };
-exports.handler = () => activeSubscription();
+exports.handler = () => getActive();

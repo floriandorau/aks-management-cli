@@ -39,4 +39,9 @@ const _getConfigPath = function () {
     return configPath;
 };
 
-module.exports = { readConfig, writeConfig };
+const get = (prop) => {
+    const config = readConfig();
+    return config ? config[prop] : null;
+};
+
+module.exports = { get, readConfig, writeConfig };

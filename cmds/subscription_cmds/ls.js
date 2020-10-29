@@ -1,6 +1,6 @@
-const { listSubscriptions } = require('../../src/cli');
+const { list } = require('../../src/subscription');
 
 exports.command = 'list';
-exports.desc = 'Lists all your confifgured subscriptions';
+exports.desc = 'Lists all your configured subscriptions';
 exports.builder = () => { };
-exports.handler = () => listSubscriptions();
+exports.handler = () => list();
