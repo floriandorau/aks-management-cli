@@ -2,7 +2,22 @@ const az = require('./azure');
 const isIp = require('is-ip');
 
 const { exec } = require('./util/cmd');
-const { readConfig } = require('./util/config');
+const { initConfig: createConfig, existsConfig, getConfigPath, readConfig } = require('./util/config');
+
+const initConfig = function () {
+    if (existsConfig()) {
+        console.log(`Initialize: Config already exists at '${getConfigPath()}`);
+    } else {
+        console.log(`Initialize: Creating new config at '${getConfigPath()}'`);
+        createConfig();
+    }
+};
+
+const showConfig = function () {
+    const config = readConfig();
+    console.log(`Your current config is: '${JSON.stringify(config, null, '  ')}'`);
+};
+
 
 const addIp = async function (ip, { cluster, resourceGroup, subscription }) {
     _validateIp(ip);
@@ -57,4 +72,4 @@ const _validateIp = function (ip) {
     }
 };
 
-module.exports = { getCurrentContext, addIp, listIpRange, removeIp };
+module.exports = { getCurrentContext, addIp, listIpRange, removeIp, initConfig, showConfig };

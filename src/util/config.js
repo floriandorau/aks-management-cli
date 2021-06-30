@@ -8,6 +8,11 @@ const APP_DIR = '.aks-mgmt';
 const CONFIG_FILE_NAME = 'config.yml';
 const APP_PATH = join(homedir(), APP_DIR);
 
+const existsConfig = function () {
+    const configPath = getConfigPath();
+    return existsSync(configPath);
+};
+
 const readConfigFile = function (path) {
     const file = readFileSync(path, 'utf8');
     return YAML.parse(file);
@@ -19,24 +24,30 @@ const writeConfigFile = function (path, config) {
     writeFileSync(path, configString, { encoding: 'utf8' });
 };
 
+const initConfig = function () {
+    const configPath = getConfigPath();
+    const configString = YAML.stringify({});
+    writeFileSync(configPath, configString, { encoding: 'utf8' });
+};
+
 const readConfig = function () {
-    const configPath = _getConfigPath();
+    if (!existsConfig()) {
+        throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
+    }
+    const configPath = getConfigPath();
     return readConfigFile(configPath);
 };
 
 const writeConfig = function (config) {
-    const configPath = _getConfigPath();
+    if (!existsConfig()) {
+        throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
+    }
+    const configPath = getConfigPath();
     writeConfigFile(configPath, config);
 };
 
-const _getConfigPath = function () {
-    const configPath = join(APP_PATH, CONFIG_FILE_NAME);
-
-    if (!existsSync(configPath)) {
-        throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
-    }
-
-    return configPath;
+const getConfigPath = function () {
+    return join(APP_PATH, CONFIG_FILE_NAME);
 };
 
 const get = (prop) => {
@@ -44,4 +55,4 @@ const get = (prop) => {
     return config ? config[prop] : null;
 };
 
-module.exports = { get, readConfig, writeConfig };
+module.exports = { existsConfig, get, getConfigPath, initConfig, readConfig, writeConfig };
