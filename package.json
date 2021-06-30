@@ -16,10 +16,11 @@
     "is-ip": "^3.1.0",
     "public-ip": "^4.0.2",
     "term-size": "^2.2.1",
-    "yaml": "1.10.0",
-    "yargs": "^16.1.0"
+    "yaml": "1.10.2",
+    "yargs": "^17.0.1"
   },
   "scripts": {
+    "start": "node ./bin/aks",
     "lint": "eslint ./src ./bin/aks"
   },
   "devDependencies": {
