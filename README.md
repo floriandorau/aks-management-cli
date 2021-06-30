@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Make sure you use a Node version >= 14.1.0.
+Make sure you use a Node version of at least `14.1.0`. Besides Node, `Azure CLI` and `kubectl` needs to be installed on your machine.
 
 ## Install
 
