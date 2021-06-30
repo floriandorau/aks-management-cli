@@ -1,5 +1,9 @@
 # aks-management-cli
 
+## Prerequisites
+
+Make sure you use a Node version >= 14.1.0.
+
 ## Install
 
 `npm install -g @floriandorau/aks-management-cli`
