@@ -1,12 +1,14 @@
 const az = require('./azure');
 const isIp = require('is-ip');
+const publicIp = require('public-ip');
 
 const { exec } = require('./util/cmd');
 const { initConfig: createConfig, existsConfig, getConfigPath, readConfig } = require('./util/config');
 
-const printAuthorizedIpRanges = function (authorizedIpRanges) {
+const printAuthorizedIpRanges = async function (authorizedIpRanges) {
+    const currentIp = await publicIp.v4();
     console.log('Authorized ip ranges are:');
-    authorizedIpRanges.forEach(ipRange => console.log(`- ${ipRange}`));
+    authorizedIpRanges.forEach(ipRange => console.log(`-> ${ipRange} ${ipRange.includes(currentIp) ? '[Your current IP]' : ''}`));
 };
 
 const initConfig = function () {
@@ -35,7 +37,7 @@ const addIp = async function (ip, { cluster, resourceGroup, subscription }) {
 const removeIp = async function (ip, { cluster, resourceGroup, subscription }) {
     _validateIp(ip);
 
-    console.log(`Removing ${ip} from authorized ip range`);
+    console.log(`Removing ${ip} from authorized ip ranges`);
     az.removeIp(ip, await _buildClusterOptions({ cluster, resourceGroup, subscription }))
         .then(ipRanges => printAuthorizedIpRanges(ipRanges))
         .catch(err => console.error('Error while removing ip address', err));
