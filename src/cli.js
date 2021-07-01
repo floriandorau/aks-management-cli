@@ -4,6 +4,11 @@ const isIp = require('is-ip');
 const { exec } = require('./util/cmd');
 const { initConfig: createConfig, existsConfig, getConfigPath, readConfig } = require('./util/config');
 
+const printAuthorizedIpRanges = function (authorizedIpRanges) {
+    console.log('Authorized ip ranges are:');
+    authorizedIpRanges.forEach(ipRange => console.log(`- ${ipRange}`));
+};
+
 const initConfig = function () {
     if (existsConfig()) {
         console.log(`Initialize: Config already exists at '${getConfigPath()}`);
@@ -18,13 +23,12 @@ const showConfig = function () {
     console.log(`Your current config is: '${JSON.stringify(config, null, '  ')}'`);
 };
 
-
 const addIp = async function (ip, { cluster, resourceGroup, subscription }) {
     _validateIp(ip);
 
     console.log(`Adding ${ip} to authorized ip range`);
     az.addIp(ip, await _buildClusterOptions({ cluster, resourceGroup, subscription }))
-        .then(authorizedIpRanges => console.log(`Authorized ip ranges are: ${authorizedIpRanges}`))
+        .then(ipRanges => printAuthorizedIpRanges(ipRanges))
         .catch(err => console.error('Error while adding ip address', err));
 };
 
@@ -33,7 +37,7 @@ const removeIp = async function (ip, { cluster, resourceGroup, subscription }) {
 
     console.log(`Removing ${ip} from authorized ip range`);
     az.removeIp(ip, await _buildClusterOptions({ cluster, resourceGroup, subscription }))
-        .then(authorizedIpRanges => console.log(`Authorized ip ranges are: ${authorizedIpRanges}`))
+        .then(ipRanges => printAuthorizedIpRanges(ipRanges))
         .catch(err => console.error('Error while removing ip address', err));
 };
 
@@ -46,7 +50,7 @@ const getCurrentContext = function () {
 const listIpRange = async function ({ cluster, resourceGroup, subscription }) {
     const options = await _buildClusterOptions({ cluster, resourceGroup, subscription });
     az.fetchAuthorizedIpRanges(options)
-        .then(ipRanges => console.log(`Authorized ip ranges are: ${ipRanges}`))
+        .then(ipRanges => printAuthorizedIpRanges(ipRanges))
         .catch(err => console.error('Error while list ip range', err));
 };
 
