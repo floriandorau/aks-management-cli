@@ -5,9 +5,9 @@ const publicIp = require('public-ip');
 const { exec } = require('./util/cmd');
 const { initConfig: createConfig, existsConfig, getConfigPath, readConfig } = require('./util/config');
 
-const printAuthorizedIpRanges = async function (authorizedIpRanges) {
+const printAuthorizedIpRanges = async function (authorizedIpRanges, options) {
     const currentIp = await publicIp.v4();
-    console.log('Authorized ip ranges are:');
+    console.log(`Authorized ip ranges of cluster '${options.name}' are:`);
     authorizedIpRanges.forEach(ipRange => console.log(`-> ${ipRange} ${ipRange.includes(currentIp) ? '[Your current IP]' : ''}`));
 };
 
@@ -29,8 +29,9 @@ const addIp = async function (ip, { cluster, resourceGroup, subscription }) {
     _validateIp(ip);
 
     console.log(`Adding ${ip} to authorized ip range`);
-    az.addIp(ip, await _buildClusterOptions({ cluster, resourceGroup, subscription }))
-        .then(ipRanges => printAuthorizedIpRanges(ipRanges))
+    const options = await _buildClusterOptions({ cluster, resourceGroup, subscription });
+    az.addIp(ip, options)
+        .then(ipRanges => printAuthorizedIpRanges(ipRanges, options))
         .catch(err => console.error('Error while adding ip address', err));
 };
 
@@ -38,8 +39,9 @@ const removeIp = async function (ip, { cluster, resourceGroup, subscription }) {
     _validateIp(ip);
 
     console.log(`Removing ${ip} from authorized ip ranges`);
-    az.removeIp(ip, await _buildClusterOptions({ cluster, resourceGroup, subscription }))
-        .then(ipRanges => printAuthorizedIpRanges(ipRanges))
+    const options = await _buildClusterOptions({ cluster, resourceGroup, subscription });
+    az.removeIp(ip, options)
+        .then(ipRanges => printAuthorizedIpRanges(ipRanges, options))
         .catch(err => console.error('Error while removing ip address', err));
 };
 
@@ -52,8 +54,8 @@ const getCurrentContext = function () {
 const listIpRange = async function ({ cluster, resourceGroup, subscription }) {
     const options = await _buildClusterOptions({ cluster, resourceGroup, subscription });
     az.fetchAuthorizedIpRanges(options)
-        .then(ipRanges => printAuthorizedIpRanges(ipRanges))
-        .catch(err => console.error('Error while list ip range', err));
+        .then(ipRanges => printAuthorizedIpRanges(ipRanges, options))
+        .catch(err => console.error('Error while listing ip ranges', err));
 };
 
 const _buildClusterOptions = async function ({ cluster, resourceGroup, subscription }) {
