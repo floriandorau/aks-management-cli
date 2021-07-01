@@ -1,15 +1,20 @@
+const ora = require('ora');
+
 const { exec } = require('./util/cmd');
 
 const DEFAULT_AUTHORIZED_IP_RANGE = '0.0.0.0/32';
 
 const fetchAuthorizedIpRanges = async ({ name, resourceGroup, subscription }) => {
-    return _runAz([
+    const spinner = ora(`Fetching authorized ip-ranges from ${name}`).start();
+    const response = await _runAz([
         'aks',
         'show',
         '--name', name,
         '--resource-group', resourceGroup,
         '--subscription', subscription,
     ]);
+    spinner.stop();
+    return response;
 };
 
 const addIp = async (ip, options) => {
@@ -19,7 +24,7 @@ const addIp = async (ip, options) => {
     const ipCidr = `${ip}/32`;
 
     if (authorizedIpRanges.includes(ipCidr)) {
-        console.log(`${ip} is already set as authorized ip ranges`);
+        console.log(`Ip ${ip} is already set as authorized ip ranges`);
         return authorizedIpRanges;
     }
 
@@ -36,7 +41,7 @@ const removeIp = async (ip, options) => {
     const authorizedIpRanges = remoteAuthorizedIpRanges.filter(range => range !== `${ip}/32`);
     if (authorizedIpRanges.length === 0) {
         authorizedIpRanges.push(DEFAULT_AUTHORIZED_IP_RANGE);
-        console.log(`No authorized ip-range left. Will set deafult authorized ip-range for security reasons [${DEFAULT_AUTHORIZED_IP_RANGE}] `);
+        console.log(`No authorized ip-range left. Will set default authorized ip-range for security reasons [${DEFAULT_AUTHORIZED_IP_RANGE}] `);
     }
 
     return _updateAuthorizedIpRanges(authorizedIpRanges, options);
@@ -44,8 +49,9 @@ const removeIp = async (ip, options) => {
 
 const _updateAuthorizedIpRanges = async (authorizedIpRanges, { name, resourceGroup, subscription }) => {
     const ipRanges = Array.from(authorizedIpRanges).join(',');
-    console.log(`Updating authorized ip-ranges to ${ipRanges}`);
-    return _runAz([
+    //console.log(`Updating authorized ip-ranges to ${ipRanges}`);
+    const spinner = ora(`Updating authorized ip-ranges to ${ipRanges}`).start();
+    const response = await _runAz([
         'aks',
         'update',
         '--api-server-authorized-ip-ranges', ipRanges,
@@ -53,6 +59,8 @@ const _updateAuthorizedIpRanges = async (authorizedIpRanges, { name, resourceGro
         '--resource-group', resourceGroup,
         '--subscription', subscription,
     ]);
+    spinner.stop();
+    return response;
 };
 
 const _parseResponse = (response) => {

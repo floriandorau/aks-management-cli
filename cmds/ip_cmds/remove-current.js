@@ -7,8 +7,7 @@ exports.desc = 'Removes current public ip from AKS authorized ip-ranges if exist
 exports.builder = () => { };
 exports.handler = async (argv) => {
     const currentIp = await publicIp.v4();
-    console.log(`Will remove your public ip address '${currentIp}' to authorized ip ranges`);
-
+    console.log(`Will remove your public ip address '${currentIp}' from authorized ip ranges`);
     const { cluster, resourceGroup, subscription } = argv;
     removeIp(currentIp, { cluster, resourceGroup, subscription });
 };
