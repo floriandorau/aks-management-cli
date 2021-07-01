@@ -8,6 +8,22 @@ Make sure you use a Node version of at least `14.1.0`. Besides Node, `Azure CLI`
 
 `npm install -g @floriandorau/aks-management-cli`
 
+## Before you start
+
+In orde to use `aks` properly make sure you setup your config corrertly. Therefore run
+
+```bash
+aks config init
+```
+
+This will prepare an empty `config.yml` inside your home directory where `aks` stores its configuration.
+
+To ease your life you could or should add your relevant Azure subscriptions to `aks` config. Use this command to do so
+
+```bash
+aks subscription add development xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
 ## Usage
 
 ```bash
