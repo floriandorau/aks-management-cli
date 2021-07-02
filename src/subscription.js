@@ -55,7 +55,7 @@ const setActive = function (name) {
                 writeConfig(config);
                 console.log(`Set '${JSON.stringify(subscription)}' as active subscription`);
             } else {
-                console.log(`No subscription configured with '${name}'. Try to add a subscription first`);
+                console.log(`No subscription configured with name '${name}'. Try to add a subscription first using 'add' command`);
             }
         } else {
             console.log('No subscriptions configured. Try to add a subscription first');

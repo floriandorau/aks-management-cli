@@ -10,18 +10,36 @@ Make sure you use a Node version of at least `14.1.0`. Besides Node, `Azure CLI`
 
 ## Before you start
 
-In orde to use `aks` properly make sure you setup your config corrertly. Therefore run
+### Init configuration
+
+Before you can use `aks` you need to set up a application config in your home directory. In order to do so you can use the following command. This will create an empty config file where `aks` will store its configuration.
 
 ```bash
 aks config init
 ```
 
-This will prepare an empty `config.yml` inside your home directory where `aks` stores its configuration.
+### Add subscriptions to config
 
-To ease your life you could or should add your relevant Azure subscriptions to `aks` config. Use this command to do so
+To ease your life you could add your relevant `Azure subscriptions` to your `aks` config. Through this you don't need to specifiy supscriptions with each command. Use the following command to add an Azure subscription id with name `development` to your config
 
 ```bash
 aks subscription add development xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
+You can add multiple subscriptions to your config add switch between them.
+
+### Set active subscription
+
+When you added a subscription to your config you can set that subscription afterwards as your active subscription though that it is used automatically with each following command.
+
+```bash
+aks subscription set development
+```
+
+To see all your configured subscriptions with its name you can run the following command
+
+```bash
+aks subscription list
 ```
 
 ## Usage
