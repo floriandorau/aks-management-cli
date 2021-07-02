@@ -20,7 +20,7 @@ const add = function (name, subscriptionId) {
             }
         } else {
             config = {
-                subscriptions: { [name]: subscriptionId }
+                subscriptions: [{ [name]: subscriptionId }]
             };
         }
         writeConfig(config);
@@ -68,7 +68,7 @@ const setActive = function (name) {
 
 const getActive = function () {
     if (!config || !config.activeSubscription) {
-        return console.log('No active subscription configured');
+        return console.log('No active subscription set');
     }
     console.log(`Current active subscription: '${JSON.stringify(config.activeSubscription)}'`);
 };

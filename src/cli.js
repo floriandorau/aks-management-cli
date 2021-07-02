@@ -1,7 +1,8 @@
-const az = require('./azure');
+const ora = require('ora');
 const isIp = require('is-ip');
 const publicIp = require('public-ip');
 
+const az = require('./azure');
 const { exec } = require('./util/cmd');
 const { initConfig: createConfig, existsConfig, getConfigPath, readConfig } = require('./util/config');
 
@@ -13,14 +14,18 @@ const printAuthorizedIpRanges = async function (authorizedIpRanges, options) {
 
 const initConfig = function () {
     if (existsConfig()) {
-        console.log(`Initialize: Config already exists at '${getConfigPath()}`);
-    } else {
-        console.log(`Initialize: Creating new config at '${getConfigPath()}'`);
-        createConfig();
+        return console.log(`Initialize: Config already exists at '${getConfigPath()}`);
     }
+
+    console.log(`Initialize: Creating new config at '${getConfigPath()}'`);
+    createConfig();
 };
 
 const showConfig = function () {
+    if (!existsConfig()) {
+        return console.log('Config does not exist yet. Please run \'init\' to create intial configuration.');
+    }
+
     const config = readConfig();
     console.log(`Your current config is: '${JSON.stringify(config, null, '  ')}'`);
 };
@@ -38,10 +43,14 @@ const addIp = async function (ip, { cluster, resourceGroup, subscription }) {
 const removeIp = async function (ip, { cluster, resourceGroup, subscription }) {
     _validateIp(ip);
 
-    console.log(`Removing ${ip} from authorized ip ranges`);
+    const spinner = ora(`Removing ${ip} from authorized ip ranges`).start();
+
     const options = await _buildClusterOptions({ cluster, resourceGroup, subscription });
     az.removeIp(ip, options)
-        .then(ipRanges => printAuthorizedIpRanges(ipRanges, options))
+        .then(ipRanges => {
+            spinner.stop();
+            printAuthorizedIpRanges(ipRanges, options);
+        })
         .catch(err => console.error('Error while removing ip address', err));
 };
 
@@ -53,9 +62,16 @@ const getCurrentContext = function () {
 
 const listIpRange = async function ({ cluster, resourceGroup, subscription }) {
     const options = await _buildClusterOptions({ cluster, resourceGroup, subscription });
+    const spinner = ora('Listing authorized ip ranges').start();
     az.fetchAuthorizedIpRanges(options)
-        .then(ipRanges => printAuthorizedIpRanges(ipRanges, options))
-        .catch(err => console.error('Error while listing ip ranges', err));
+        .then(ipRanges => {
+            spinner.stop();
+            printAuthorizedIpRanges(ipRanges, options);
+        })
+        .catch(err => {
+            spinner.stop();
+            console.error('Error while listing ip ranges', err);
+        });
 };
 
 const _buildClusterOptions = async function ({ cluster, resourceGroup, subscription }) {

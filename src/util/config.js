@@ -2,7 +2,7 @@ const YAML = require('yaml');
 
 const { join } = require('path');
 const { homedir } = require('os');
-const { existsSync, readFileSync, writeFileSync } = require('fs');
+const { existsSync, readFileSync, writeFileSync, mkdirSync } = require('fs');
 
 const APP_DIR = '.aks-mgmt';
 const CONFIG_FILE_NAME = 'config.yml';
@@ -25,6 +25,8 @@ const writeConfigFile = function (path, config) {
 };
 
 const initConfig = function () {
+    if (!existsSync(APP_PATH)) mkdirSync(APP_PATH);
+
     const configPath = getConfigPath();
     const configString = YAML.stringify({});
     writeFileSync(configPath, configString, { encoding: 'utf8' });
