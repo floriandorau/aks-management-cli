@@ -4,20 +4,36 @@ const { exec } = require('./util/cmd');
 
 const DEFAULT_AUTHORIZED_IP_RANGE = '0.0.0.0/32';
 
-const fetchAuthorizedIpRanges = async ({ name, resourceGroup, subscription }) => {
-    const spinner = ora(`Fetching authorized ip-ranges from ${name}`).start();
+const assertOptions = function ({ name, resourceGroup, subscription }) {
+    if (!name) {
+        throw Error('No name provided. Use option --cluster');
+    }
+    if (!resourceGroup) {
+        throw Error('No resourceGroup provided. Use option --resource-group');
+    }
+    if (!subscription) {
+        throw Error('No subscription provided. Either use option --subscription or try to set active subscription');
+    }
+};
+
+const fetchAuthorizedIpRanges = async (options) => {
+    assertOptions(options);
+
+    const spinner = ora(`Fetching authorized ip-ranges from ${options.name}`).start();
     const response = await _runAz([
         'aks',
         'show',
-        '--name', name,
-        '--resource-group', resourceGroup,
-        '--subscription', subscription,
+        '--name', options.name,
+        '--resource-group', options.resourceGroup,
+        '--subscription', options.subscription,
     ]);
     spinner.stop();
     return response;
 };
 
 const addIp = async (ip, options) => {
+    assertOptions(options);
+
     let authorizedIpRanges = await fetchAuthorizedIpRanges(options);
 
     // Transform ip to CIDR notation
@@ -36,6 +52,8 @@ const addIp = async (ip, options) => {
 };
 
 const removeIp = async (ip, options) => {
+    assertOptions(options);
+
     let remoteAuthorizedIpRanges = await fetchAuthorizedIpRanges(options);
 
     const authorizedIpRanges = remoteAuthorizedIpRanges.filter(range => range !== `${ip}/32`);
@@ -47,7 +65,9 @@ const removeIp = async (ip, options) => {
     return _updateAuthorizedIpRanges(authorizedIpRanges, options);
 };
 
-const _updateAuthorizedIpRanges = async (authorizedIpRanges, { name, resourceGroup, subscription }) => {
+const _updateAuthorizedIpRanges = async (authorizedIpRanges, options) => {
+    assertOptions(options);
+
     const ipRanges = Array.from(authorizedIpRanges).join(',');
     //console.log(`Updating authorized ip-ranges to ${ipRanges}`);
     const spinner = ora(`Updating authorized ip-ranges to ${ipRanges}`).start();
@@ -55,9 +75,9 @@ const _updateAuthorizedIpRanges = async (authorizedIpRanges, { name, resourceGro
         'aks',
         'update',
         '--api-server-authorized-ip-ranges', ipRanges,
-        '--name', name,
-        '--resource-group', resourceGroup,
-        '--subscription', subscription,
+        '--name', options.name,
+        '--resource-group', options.resourceGroup,
+        '--subscription', options.subscription,
     ]);
     spinner.stop();
     return response;
