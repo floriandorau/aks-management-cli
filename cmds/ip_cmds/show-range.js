@@ -3,7 +3,4 @@ const { listIpRange } = require('../../src/cli');
 exports.command = 'show-range';
 exports.desc = 'Prints current authorized ip-range of AKS';
 exports.builder = () => { };
-exports.handler = (argv) => {
-    const { cluster, resourceGroup, subscription } = argv;
-    listIpRange({ cluster, resourceGroup, subscription });
-};
+exports.handler = () => listIpRange();

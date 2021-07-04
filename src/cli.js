@@ -6,23 +6,29 @@ const az = require('./azure');
 const { exec } = require('./util/cmd');
 const { initConfig: createConfig, existsConfig, getConfigPath, readConfig } = require('./util/config');
 
-const printAuthorizedIpRanges = async function (authorizedIpRanges, options) {
+const printAuthorizedIpRanges = async function (authorizedIpRanges, context) {
     const currentIp = await publicIp.v4();
-    console.log(`Authorized ip ranges of cluster '${options.name}' are:`);
+    console.log(`Authorized ip ranges of cluster '${context.name}' are:`);
     authorizedIpRanges.forEach(ipRange => console.log(`-> ${ipRange} ${ipRange.includes(currentIp) ? '[Your current IP]' : ''}`));
 };
 
+const handleError = function (message, err) {
+    console.log(message, '\n');
+    console.log(err.message);
+};
+
 const initConfig = function () {
-    if (existsConfig()) {
-        return console.log(`Initialize: Config already exists at '${getConfigPath()}`);
+    const configPath = getConfigPath();
+    if (existsConfig(configPath)) {
+        return console.log(`Initialize: Config already exists at '${configPath}`);
     }
 
-    console.log(`Initialize: Creating new config at '${getConfigPath()}'`);
+    console.log(`Initialize: Creating new config at '${configPath}'`);
     createConfig();
 };
 
 const showConfig = function () {
-    if (!existsConfig()) {
+    if (!existsConfig(getConfigPath())) {
         return console.log('Config does not exist yet. Please run \'init\' to create intial configuration.');
     }
 
@@ -30,61 +36,61 @@ const showConfig = function () {
     console.log(`Your current config is: '${JSON.stringify(config, null, '  ')}'`);
 };
 
-const addIp = async function (ip, { cluster, resourceGroup, subscription }) {
+const addIp = async function (ip) {
     _validateIp(ip);
 
-    console.log(`Adding ${ip} to authorized ip range`);
-    const options = await _buildClusterOptions({ cluster, resourceGroup, subscription });
-    az.addIp(ip, options)
-        .then(ipRanges => printAuthorizedIpRanges(ipRanges, options))
+    console.log(`Adding '${ip}' to AKS authorized ip range`);
+    const context = await _buildClusterContext();
+    az.addIp(ip, context)
+        .then(ipRanges => printAuthorizedIpRanges(ipRanges, context))
         .catch(err => console.error('Error while adding ip address', err));
 };
 
-const removeIp = async function (ip, { cluster, resourceGroup, subscription }) {
+const removeIp = async function (ip) {
     _validateIp(ip);
 
     const spinner = ora(`Removing ${ip} from authorized ip ranges`).start();
 
-    const options = await _buildClusterOptions({ cluster, resourceGroup, subscription });
-    az.removeIp(ip, options)
+    const context = await _buildClusterContext();
+    az.removeIp(ip, context)
         .then(ipRanges => {
             spinner.stop();
-            printAuthorizedIpRanges(ipRanges, options);
+            printAuthorizedIpRanges(ipRanges, context);
         })
         .catch(err => console.error('Error while removing ip address', err));
 };
 
 const getCurrentContext = function () {
-    _getCurrentCluster()
+    _getCurrentContext()
         .then(clusterContext => console.log(`Your current cluster context is: '${clusterContext}'`))
         .catch(err => console.error('Error while reading cluster context', err));
 };
 
-const listIpRange = async function ({ cluster, resourceGroup, subscription }) {
-    const options = await _buildClusterOptions({ cluster, resourceGroup, subscription });
-    const spinner = ora('Listing authorized ip ranges').start();
-    az.fetchAuthorizedIpRanges(options)
-        .then(ipRanges => {
-            spinner.stop();
-            printAuthorizedIpRanges(ipRanges, options);
-        })
-        .catch(err => {
-            spinner.stop();
-            console.error('Error while listing ip ranges', err);
-        });
+const listIpRange = async function () {
+    const context = await _buildClusterContext();
+    az.fetchAuthorizedIpRanges(context)
+        .then(ipRanges => printAuthorizedIpRanges(ipRanges, context))
+        .catch(err => handleError('Error while listing ip ranges', err));
 };
 
-const _buildClusterOptions = async function ({ cluster, resourceGroup, subscription }) {
+const _buildClusterContext = async function () {
     const config = readConfig();
-    const currentClusterContext = await _getCurrentCluster();
-    return {
-        name: cluster ?? currentClusterContext,
-        resourceGroup: resourceGroup ?? currentClusterContext,
-        subscription: config.activeSubscription ? Object.values(config.activeSubscription)[0] : subscription
-    };
+    const currentContext = await _getCurrentContext();
+
+    if (config && config.contexts) {
+        const context = config.contexts.filter(context => currentContext in context)[0];
+        return {
+            name: context[currentContext].name,
+            resourceGroup: context[currentContext].resourceGroup,
+            subscription: context[currentContext].subscriptionId
+        };
+    } else {
+        throw Error(`No context configured with name '${currentContext}'. Try to add context first.`);
+    }
+
 };
 
-const _getCurrentCluster = async function () {
+const _getCurrentContext = async function () {
     const currentContext = await exec('kubectl', ['config', 'current-context']);
     return currentContext.trim();
 };

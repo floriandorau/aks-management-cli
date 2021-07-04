@@ -8,9 +8,25 @@ Make sure you use a Node version of at least `14.1.0`. Besides Node, `Azure CLI`
 
 `npm install -g @floriandorau/aks-management-cli`
 
+## Usage
+
+```bash
+aks <command>
+
+Commands:
+  aks config <command>   Manage aks configuration
+  aks context <command>  Manage stored context configurations
+  aks ip <command>       Manage AKS cluster authorized ip range
+  aks completion         Generate completion script
+
+Options:
+  --version  Show version
+  --help     Show help
+```
+
 ## Before you start
 
-### Init configuration
+### Init aks configuration
 
 Before you can use `aks` you need to set up a application config in your home directory. In order to do so you can use the following command. This will create an empty config file where `aks` will store its configuration.
 
@@ -18,44 +34,44 @@ Before you can use `aks` you need to set up a application config in your home di
 aks config init
 ```
 
-### Add subscriptions to config
+### Add context to configuration
 
-To ease your life you could add your relevant `Azure subscriptions` to your `aks` config. Through this you don't need to specifiy supscriptions with each command. Use the following command to add an Azure subscription id with name `development` to your config
+At second you need to configure your contexts. With this `aks` can determine which parameters should be used dependent on your current `kubectl` context.
 
-```bash
-aks subscription add development xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-```
-
-You can add multiple subscriptions to your config add switch between them.
-
-### Set active subscription
-
-When you added a subscription to your config you can set that subscription afterwards as your active subscription though that it is used automatically with each following command.
+To add a new context in your configuration you can use the following command.
 
 ```bash
-aks subscription set development
+aks context add {cluster-name} {resource-group} {subscription-id}
 ```
 
-To see all your configured subscriptions with its name you can run the following command
+You can add multiple context to your config. If the cluster name matches the output of `kubectl config current-context`, `aks` can automatically use the correct settings for cluster name, resource group and its coresponding subscription.
+
+### List configured contexts
+
+If you want to know, which context is already added to you `aks` configuration youn can use the following command.
 
 ```bash
-aks subscription list
+aks context list
 ```
 
-## Usage
+## AKS authorized IP ranges
+
+The main purpose of `aks` is managing the authorized IP ranges of AKS clusters. Therefore it provides the following commands which you can use to modify the authorized ip range of a cluster which matches your currrent `kubectl` context.
 
 ```bash
-$ aks --help
+Usage: aks ip <command>
 
-aks <command>
+Commands:
+  aks ip add-current     Adds your current public ip to AKS authorized ip-ranges
+  aks ip add <ip>        Adds <ip> to AKS authorized ip-ranges
+  aks ip remove-current  Removes current public ip from AKS authorized ip-ranges if exists
+  aks ip remove <ip>     Removes <ip> from AKS authorized ip-ranges
+  aks ip show-current    Prints your current public ip address
+  aks ip show-range      Prints current authorized ip-range of AKS
 
-Kommandos:
-  aks current-context         Prints your current configured kubectl context
-  aks ip <command>            Manage AKS authorized ip range
-  aks subscription <command>  Manage stored Azure subscriptions
-  aks completion              generate completion script
-
-Optionen:
-  --version  Version anzeigen                                                                                                                                                                                                 [boolean]
-  --help     Hilfe anzeigen
+Options:
+  --version  Show version
+  --help     Show help
 ```
+
+All "_current_" commands will determine you current public IP address and modify the IP range accordingly.

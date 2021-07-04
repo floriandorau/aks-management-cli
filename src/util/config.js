@@ -4,12 +4,16 @@ const { join } = require('path');
 const { homedir } = require('os');
 const { existsSync, readFileSync, writeFileSync, mkdirSync } = require('fs');
 
+const CONFIG_VERSION = 1;
 const APP_DIR = '.aks-mgmt';
 const CONFIG_FILE_NAME = 'config.yml';
 const APP_PATH = join(homedir(), APP_DIR);
 
-const existsConfig = function () {
-    const configPath = getConfigPath();
+const getConfigPath = function () {
+    return join(APP_PATH, CONFIG_FILE_NAME);
+};
+
+const existsConfig = function (configPath) {
     return existsSync(configPath);
 };
 
@@ -28,28 +32,24 @@ const initConfig = function () {
     if (!existsSync(APP_PATH)) mkdirSync(APP_PATH);
 
     const configPath = getConfigPath();
-    const configString = YAML.stringify({});
+    const configString = YAML.stringify({ version: CONFIG_VERSION });
     writeFileSync(configPath, configString, { encoding: 'utf8' });
 };
 
 const readConfig = function () {
-    if (!existsConfig()) {
+    const configPath = getConfigPath();
+    if (!existsConfig(configPath)) {
         throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
     }
-    const configPath = getConfigPath();
     return readConfigFile(configPath);
 };
 
 const writeConfig = function (config) {
-    if (!existsConfig()) {
+    const configPath = getConfigPath();
+    if (!existsConfig(configPath)) {
         throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
     }
-    const configPath = getConfigPath();
     writeConfigFile(configPath, config);
-};
-
-const getConfigPath = function () {
-    return join(APP_PATH, CONFIG_FILE_NAME);
 };
 
 const get = (prop) => {

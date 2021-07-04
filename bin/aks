@@ -1,6 +1,20 @@
 #!/usr/bin/env node
 const termSize = require('term-size');
 
+const pkgJson = require('../package.json');
+
+const handleError = function (msg, err) {
+    if (err) {
+        console.error(err.message);
+    }
+    else if (msg) {
+        console.log(msg);
+    }
+
+    process.exit(1);
+};
+
+
 require('yargs/yargs')(process.argv.slice(2))
     .commandDir('../cmds')
     .demandCommand()
@@ -8,4 +22,6 @@ require('yargs/yargs')(process.argv.slice(2))
     .completion()
     .wrap(termSize().columns)
     .help('help')
+    .fail(handleError)
+    .epilogue(`for more information, see ${pkgJson.homepage}`)
     .argv;

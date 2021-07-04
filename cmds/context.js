@@ -1,8 +1,8 @@
-const { getCurrentContext } = require('../src/cli');
-
-exports.command = 'current-context';
-exports.desc = 'Prints your current configured kubectl context';
-
-exports.builder = () => { };
-
-exports.handler = () => getCurrentContext();
+exports.command = 'context <command>';
+exports.desc = 'Manage stored context configurations';
+exports.builder = (yargs) => {
+    yargs
+        .usage('Usage: $0 context <command> [options]')
+        //.example('$0 context active <name>', 'set your active subscription in config')
+        .commandDir('context_cmds');
+};

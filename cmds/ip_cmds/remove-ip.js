@@ -1,6 +1,6 @@
 const { removeIp } = require('../../src/cli');
 
-exports.command = 'rm <ip>';
+exports.command = 'remove <ip>';
 exports.desc = 'Removes <ip> from AKS authorized ip-ranges';
 exports.builder = (yargs) => {
     yargs.positional('ip', {
@@ -8,7 +8,4 @@ exports.builder = (yargs) => {
         type: 'string'
     });
 };
-exports.handler = (argv) => {
-    const { cluster, resourceGroup, subscription } = argv;
-    removeIp(argv.ip, { cluster, resourceGroup, subscription });
-};
+exports.handler = (argv) => { removeIp(argv.ip); };

@@ -8,7 +8,4 @@ exports.builder = (yargs) => {
         type: 'string'
     });
 };
-exports.handler = (argv) => {
-    const { cluster, resourceGroup, subscription } = argv;
-    addIp(argv.ip, { cluster, resourceGroup, subscription });
-};
+exports.handler = (argv) => addIp(argv.ip);
