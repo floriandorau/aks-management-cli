@@ -3,7 +3,8 @@ const isIp = require('is-ip');
 const publicIp = require('public-ip');
 
 const az = require('./azure');
-const { exec } = require('./util/cmd');
+const { buildClusterContext, getCurrentContext } = require('./kubectl');
+
 const { initConfig: createConfig, existsConfig, getConfigPath, readConfig } = require('./util/config');
 
 const printAuthorizedIpRanges = async function (authorizedIpRanges, context) {
@@ -40,10 +41,10 @@ const addIp = async function (ip) {
     _validateIp(ip);
 
     console.log(`Adding '${ip}' to AKS authorized ip range`);
-    const context = await _buildClusterContext();
+    const context = await buildClusterContext();
     az.addIp(ip, context)
         .then(ipRanges => printAuthorizedIpRanges(ipRanges, context))
-        .catch(err => console.error('Error while adding ip address', err));
+        .catch(err => handleError(`Error while adding ip ${ip}`, err));
 };
 
 const removeIp = async function (ip) {
@@ -51,50 +52,27 @@ const removeIp = async function (ip) {
 
     const spinner = ora(`Removing ${ip} from authorized ip ranges`).start();
 
-    const context = await _buildClusterContext();
+    const context = await buildClusterContext();
     az.removeIp(ip, context)
         .then(ipRanges => {
             spinner.stop();
             printAuthorizedIpRanges(ipRanges, context);
         })
-        .catch(err => console.error('Error while removing ip address', err));
-};
-
-const getCurrentContext = function () {
-    _getCurrentContext()
-        .then(clusterContext => console.log(`Your current cluster context is: '${clusterContext}'`))
-        .catch(err => console.error('Error while reading cluster context', err));
+        .catch(err => handleError('Error while removing ip address', err));
 };
 
 const listIpRange = async function () {
-    const context = await _buildClusterContext();
+    const context = await buildClusterContext();
     az.fetchAuthorizedIpRanges(context)
         .then(ipRanges => printAuthorizedIpRanges(ipRanges, context))
         .catch(err => handleError('Error while listing ip ranges', err));
 };
 
-const _buildClusterContext = async function () {
-    const config = readConfig();
-    const currentContext = await _getCurrentContext();
-
-    if (config && config.contexts) {
-        const context = config.contexts.filter(context => currentContext in context)[0];
-        return {
-            name: context[currentContext].name,
-            resourceGroup: context[currentContext].resourceGroup,
-            subscription: context[currentContext].subscriptionId
-        };
-    } else {
-        throw Error(`No context configured with name '${currentContext}'. Try to add context first.`);
-    }
-
+const showCurrentContext = function () {
+    getCurrentContext()
+        .then(clusterContext => console.log(`Your current kubectl config context is: '${clusterContext}'`))
+        .catch(err => handleError('Error while reading cluster context', err));
 };
-
-const _getCurrentContext = async function () {
-    const currentContext = await exec('kubectl', ['config', 'current-context']);
-    return currentContext.trim();
-};
-
 
 const _validateIp = function (ip) {
     if (!isIp.v4(ip)) {
@@ -102,4 +80,4 @@ const _validateIp = function (ip) {
     }
 };
 
-module.exports = { getCurrentContext, addIp, listIpRange, removeIp, initConfig, showConfig };
+module.exports = { addIp, listIpRange, removeIp, initConfig, showConfig, showCurrentContext };
