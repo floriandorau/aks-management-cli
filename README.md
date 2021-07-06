@@ -10,6 +10,8 @@ Make sure you use a Node version of at least `14.1.0`. Besides Node, `Azure CLI`
 
 ## Usage
 
+Run `aks --help` to see how to use it.
+
 ```bash
 aks <command>
 
