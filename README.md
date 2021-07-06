@@ -46,11 +46,11 @@ To add a new context in your configuration you can use the following command.
 aks context add {cluster-name} {resource-group} {subscription-id}
 ```
 
-You can add multiple context to your config. If the cluster name matches the output of `kubectl config current-context`, `aks` can automatically use the correct settings for cluster name, resource group and its coresponding subscription.
+You can add multiple contexts to your configuration. If the cluster name matches the output of `kubectl config current-context`, `aks` can automatically use the correct settings for cluster name, resource group and its corresponding subscription.
 
 ### List configured contexts
 
-If you want to know, which context is already added to you `aks` configuration youn can use the following command.
+If you want to know, which context is already added to your `aks` configuration you can use the following command.
 
 ```bash
 aks context list
@@ -58,7 +58,7 @@ aks context list
 
 ## AKS authorized IP ranges
 
-The main purpose of `aks` is managing the authorized IP ranges of AKS clusters. Therefore it provides the following commands which you can use to modify the authorized ip range of a cluster which matches your currrent `kubectl` context.
+The main purpose of `aks` is managing the authorized IP ranges of AKS clusters. Therefore it provides the following commands which you can use to modify the authorized ip ranges of a cluster which matches your currrent `kubectl` context.
 
 ```bash
 Usage: aks ip <command>
