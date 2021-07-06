@@ -1,6 +1,6 @@
 {
   "name": "@floriandorau/aks-management-cli",
-  "version": "1.0.2",
+  "version": "1.0.3-rc.0",
   "main": "index.js",
   "license": "MIT",
   "homepage": "https://github.com/floriandorau/aks-management-cli",
@@ -10,7 +10,7 @@
   },
   "author": "floriandorau",
   "bin": {
-    "aks": "./bin/aks"
+    "aks": "bin/aks"
   },
   "dependencies": {
     "is-ip": "^3.1.0",
