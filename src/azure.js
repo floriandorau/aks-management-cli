@@ -18,17 +18,13 @@ const assertContext = function (name, resourceGroup, subscription) {
 
 const fetchAuthorizedIpRanges = async ({ name, resourceGroup, subscription }) => {
     assertContext(name, resourceGroup, subscription);
-
-    const spinner = ora(`Fetching authorized ip-ranges from ${resourceGroup}/${name}`).start();
-    const response = await _runAz([
+    return await _runAz(`Fetching authorized ip-ranges from ${resourceGroup}/${name}`, [
         'aks',
         'show',
         '--name', name,
         '--resource-group', resourceGroup,
         '--subscription', subscription,
     ]);
-    spinner.succeed();
-    return response;
 };
 
 const addIp = async (ip, context) => {
@@ -38,7 +34,7 @@ const addIp = async (ip, context) => {
     const ipCidr = `${ip}/32`;
 
     if (authorizedIpRanges.includes(ipCidr)) {
-        console.log(`IP '${ip}' is already add to authorized ip ranges`);
+        console.log(`Ip '${ip}' is already added to authorized ip-ranges`);
         return authorizedIpRanges;
     }
 
@@ -65,8 +61,7 @@ const _updateAuthorizedIpRanges = async (authorizedIpRanges, { name, resourceGro
     assertContext(name, resourceGroup, subscription);
 
     const ipRanges = Array.from(authorizedIpRanges).join(', ');
-    const spinner = ora(`Updating authorized ip-ranges to [${ipRanges}]`).start();
-    const response = await _runAz([
+    return await _runAz(`Updating authorized ip-ranges to [${ipRanges}]`, [
         'aks',
         'update',
         '--api-server-authorized-ip-ranges', ipRanges,
@@ -74,8 +69,6 @@ const _updateAuthorizedIpRanges = async (authorizedIpRanges, { name, resourceGro
         '--resource-group', resourceGroup,
         '--subscription', subscription,
     ]);
-    spinner.succeed();
-    return response;
 };
 
 const _parseResponse = (response) => {
@@ -83,14 +76,21 @@ const _parseResponse = (response) => {
     return result?.apiServerAccessProfile?.authorizedIpRanges || [];
 };
 
-const _runAz = async (args, options = { debug: false }) => {
-    const response = await exec('az', args, options);
-    if (!response) {
-        console.log(response);
-        throw new Error('no valid response from cluster');
-    }
+const _runAz = async (message, args, options = { debug: false }) => {
+    const spinner = ora(message).start();
 
-    return _parseResponse(response);
+    try {
+        const response = await exec('az', args, options);
+        if (!response) {
+            spinner.fail();
+            throw Error('no valid response from cluster');
+        }
+        spinner.succeed();
+        return _parseResponse(response);
+    } catch (e) {
+        spinner.fail();
+        throw e;
+    }
 };
 
 module.exports = { addIp, removeIp, fetchAuthorizedIpRanges };
