@@ -68,6 +68,14 @@ const listIpRange = async function () {
         .catch(err => handleError('Error while listing ip ranges', err));
 };
 
+
+const getCredentials = async function () {
+    const context = await buildClusterContext();
+    az.getCredentials(context)
+        .then(foo => console.log(foo))
+        .catch(err => handleError(`Error while getting credentials for cluster ${context.name}`, err));
+};
+
 const showCurrentContext = function () {
     getCurrentContext()
         .then(clusterContext => console.log(`Your current kubectl config context is: '${clusterContext}'`))
@@ -80,4 +88,4 @@ const _validateIp = function (ip) {
     }
 };
 
-module.exports = { addIp, listIpRange, removeIp, initConfig, showConfig, showCurrentContext };
+module.exports = { addIp, getCredentials, initConfig, listIpRange, removeIp, showConfig, showCurrentContext };

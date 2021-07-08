@@ -16,6 +16,18 @@ const assertContext = function (name, resourceGroup, subscription) {
     }
 };
 
+const getCredentials = async ({ name, resourceGroup, subscription }) => {
+    assertContext(name, resourceGroup, subscription);
+    return await _runAz(`Get credentials for cluster ${resourceGroup}/${name}`, [
+        'aks',
+        'get-credentials',
+        '--name', name,
+        '--resource-group', resourceGroup,
+        '--subscription', subscription,
+        '--overwrite-existing'
+    ], { parseResponse: false });
+};
+
 const fetchAuthorizedIpRanges = async ({ name, resourceGroup, subscription }) => {
     assertContext(name, resourceGroup, subscription);
     return await _runAz(`Fetching authorized ip-ranges from ${resourceGroup}/${name}`, [
@@ -76,7 +88,7 @@ const _parseResponse = (response) => {
     return result?.apiServerAccessProfile?.authorizedIpRanges || [];
 };
 
-const _runAz = async (message, args, options = { debug: false }) => {
+const _runAz = async (message, args, options = { parseResponse: true, debug: false }) => {
     const spinner = ora(message).start();
 
     try {
@@ -86,11 +98,12 @@ const _runAz = async (message, args, options = { debug: false }) => {
             throw Error('no valid response from cluster');
         }
         spinner.succeed();
-        return _parseResponse(response);
+
+        return options.parseResponse ? _parseResponse(response) : response;
     } catch (e) {
         spinner.fail();
         throw e;
     }
 };
 
-module.exports = { addIp, removeIp, fetchAuthorizedIpRanges };
+module.exports = { getCredentials, addIp, removeIp, fetchAuthorizedIpRanges };
