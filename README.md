@@ -1,5 +1,7 @@
 # aks-management-cli
 
+`aks` is a command line tool that let you manage the authorized IP ranges of managed AKS clusters. Therefore it uses `Azure CLI` and `kubectl` in the background.
+
 ## Prerequisites
 
 Make sure you use a Node version of at least `14.1.0`. Besides Node, `Azure CLI` and `kubectl` needs to be installed on your machine.
