@@ -1,5 +1,5 @@
 exports.command = 'ip <command>';
-exports.desc = 'Manage AKS cluster authorized ip range';
+exports.desc = 'Manage authorized ip range of managed Kubernetes cluster';
 exports.builder = (yargs) =>
     yargs
         .commandDir('ip_cmds')

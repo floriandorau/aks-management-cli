@@ -19,9 +19,10 @@ aks <command>
 
 Commands:
   aks config <command>   Manage aks configuration
-  aks context <command>  Manage stored context configurations
-  aks ip <command>       Manage AKS cluster authorized ip range
-  aks completion         Generate completion script
+  aks context <command>  Manage aks context configurations
+  aks get-credentials    Get access credentials for a managed Kubernetes cluster
+  aks ip <command>       Manage authorized ip range of managed Kubernetes cluster
+  aks completion         generate completion script
 
 Options:
   --version  Show version
