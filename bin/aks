@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 const termSize = require('term-size');
+const logSymbols = require('log-symbols');
 
 const pkgJson = require('../package.json');
 
 const handleError = function (msg, err) {
     if (err) {
-        console.error(err.message);
+        console.log('\n');
+        console.log('Error running command');
+        console.error(logSymbols.error, err.message);
+        console.log('\n');
     }
     else if (msg) {
         console.log(msg);

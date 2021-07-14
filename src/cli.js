@@ -1,22 +1,9 @@
-const ora = require('ora');
-const isIp = require('is-ip');
-const publicIp = require('public-ip');
-
 const az = require('./azure');
+
+const { isIpV4 } = require('./validate');
+const { printAuthorizedIpRanges, printError } = require('./output');
 const { buildClusterContext, getCurrentContext } = require('./kubectl');
-
 const { initConfig: createConfig, existsConfig, getConfigPath, readConfig } = require('./util/config');
-
-const printAuthorizedIpRanges = async function (authorizedIpRanges, context) {
-    const currentIp = await publicIp.v4();
-    console.log(`Authorized ip ranges of cluster '${context.name}' are:`);
-    authorizedIpRanges.forEach(ipRange => console.log(`-> ${ipRange} ${ipRange.includes(currentIp) ? '[Your current IP]' : ''}`));
-};
-
-const handleError = function (message, err) {
-    console.log(message, '\n');
-    console.log(err.message);
-};
 
 const initConfig = function () {
     const configPath = getConfigPath();
@@ -38,34 +25,31 @@ const showConfig = function () {
 };
 
 const addIp = async function (ip) {
-    _validateIp(ip);
+    isIpV4(ip);
 
     console.log(`Adding '${ip}' to AKS authorized ip range`);
     const context = await buildClusterContext();
     az.addIp(ip, context)
         .then(ipRanges => printAuthorizedIpRanges(ipRanges, context))
-        .catch(err => handleError(`Error while adding ip ${ip}`, err));
+        .catch(err => printError(`Error while adding ip ${ip}`, err));
 };
 
 const removeIp = async function (ip) {
-    _validateIp(ip);
+    isIpV4(ip);
 
-    const spinner = ora(`Removing ${ip} from authorized ip ranges`).start();
+    console.log(`Removing ${ip} from authorized ip ranges`);
 
     const context = await buildClusterContext();
     az.removeIp(ip, context)
-        .then(ipRanges => {
-            spinner.stop();
-            printAuthorizedIpRanges(ipRanges, context);
-        })
-        .catch(err => handleError('Error while removing ip address', err));
+        .then(ipRanges => printAuthorizedIpRanges(ipRanges, context))
+        .catch(err => printError('Error while removing ip address', err));
 };
 
 const listIpRange = async function () {
     const context = await buildClusterContext();
     az.fetchAuthorizedIpRanges(context)
         .then(ipRanges => printAuthorizedIpRanges(ipRanges, context))
-        .catch(err => handleError('Error while listing ip ranges', err));
+        .catch(err => printError('Error while listing ip ranges', err));
 };
 
 
@@ -73,19 +57,14 @@ const getCredentials = async function () {
     const context = await buildClusterContext();
     az.getCredentials(context)
         .then(foo => console.log(foo))
-        .catch(err => handleError(`Error while getting credentials for cluster ${context.name}`, err));
+        .catch(err => printError(`Error while getting credentials for cluster ${context.name}`, err));
 };
 
 const showCurrentContext = function () {
     getCurrentContext()
         .then(clusterContext => console.log(`Your current kubectl config context is: '${clusterContext}'`))
-        .catch(err => handleError('Error while reading cluster context', err));
+        .catch(err => printError('Error while reading cluster context', err));
 };
 
-const _validateIp = function (ip) {
-    if (!isIp.v4(ip)) {
-        throw new Error(`'${ip}' is not a valid IPv4 address.`);
-    }
-};
 
 module.exports = { addIp, getCredentials, initConfig, listIpRange, removeIp, showConfig, showCurrentContext };
