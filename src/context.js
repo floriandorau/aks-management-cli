@@ -12,7 +12,7 @@ const list = function () {
 const add = function (name, resourceGroup, subscriptionId) {
     try {
         if (config && config.contexts) {
-            const context = config.contexts.filter(context => name in context)[0];
+            const context = config.contexts.filter(ctx => name in ctx)[0];
             if (context) {
                 console.log(`Context with name '${name}' already exists: '${JSON.stringify(context, null, '  ')} '`);
             } else {
@@ -46,7 +46,7 @@ const add = function (name, resourceGroup, subscriptionId) {
 const remove = function (name) {
     try {
         if (config && config.contexts) {
-            const contexts = config.contexts.filter(context => !(name in context));
+            const contexts = config.contexts.filter(ctx => !(name in ctx));
             config.contexts = contexts;
         }
         writeConfig(config);

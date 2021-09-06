@@ -18,7 +18,7 @@ const assertContext = function (name, resourceGroup, subscription) {
 
 const getCredentials = async ({ name, resourceGroup, subscription }) => {
     assertContext(name, resourceGroup, subscription);
-    return await _runAz(`Get credentials for cluster ${resourceGroup}/${name}`, [
+    return _runAz(`Get credentials for cluster ${resourceGroup}/${name}`, [
         'aks',
         'get-credentials',
         '--name', name,
@@ -30,7 +30,7 @@ const getCredentials = async ({ name, resourceGroup, subscription }) => {
 
 const fetchAuthorizedIpRanges = async ({ name, resourceGroup, subscription }) => {
     assertContext(name, resourceGroup, subscription);
-    return await _runAz(`Fetching authorized ip-ranges from ${resourceGroup}/${name}`, [
+    return _runAz(`Fetching authorized ip-ranges from ${resourceGroup}/${name}`, [
         'aks',
         'show',
         '--name', name,
@@ -73,7 +73,7 @@ const _updateAuthorizedIpRanges = async (authorizedIpRanges, { name, resourceGro
     assertContext(name, resourceGroup, subscription);
 
     const ipRanges = Array.from(authorizedIpRanges).join(', ');
-    return await _runAz(`Updating authorized ip-ranges to [${ipRanges}]`, [
+    return _runAz(`Updating authorized ip-ranges to [${ipRanges}]`, [
         'aks',
         'update',
         '--api-server-authorized-ip-ranges', ipRanges,

@@ -6,7 +6,7 @@ const buildClusterContext = async function () {
     const currentContext = await getCurrentContext();
 
     if (config && config.contexts) {
-        const context = config.contexts.filter(context => currentContext in context)[0];
+        const context = config.contexts.filter(ctx => currentContext in ctx)[0];
         return {
             name: context[currentContext].name,
             resourceGroup: context[currentContext].resourceGroup,
