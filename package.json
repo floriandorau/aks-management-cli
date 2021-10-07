@@ -1,6 +1,6 @@
 {
   "name": "@floriandorau/aks-management-cli",
-  "version": "1.1.1-rc.0",
+  "version": "1.1.1",
   "main": "index.js",
   "license": "MIT",
   "homepage": "https://github.com/floriandorau/aks-management-cli",
