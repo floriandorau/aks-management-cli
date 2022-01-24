@@ -28,7 +28,7 @@
     "lint": "eslint ./src ./bin/aks"
   },
   "devDependencies": {
-    "eslint": "^7.11.0"
+    "eslint": "^8.7.0"
   },
   "engines": {
     "node": ">=14.1.0"
