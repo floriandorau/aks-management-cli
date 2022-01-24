@@ -7,15 +7,15 @@ const buildClusterContext = async function () {
 
     if (config && config.contexts) {
         const context = config.contexts.filter(ctx => currentContext in ctx)[0];
-        return {
-            name: context[currentContext].name,
-            resourceGroup: context[currentContext].resourceGroup,
-            subscription: context[currentContext].subscriptionId
-        };
-    } else {
-        throw Error(`No context with name '${currentContext}' configured. Try to add context first.`);
-    }
+        if (!context) {
+            throw Error(`No context with name '${currentContext}' configured. Try to add context first, check 'aks context add help'`);
+        }
 
+        const { name, resourceGroup, subscriptionId } = context[currentContext];
+        return { name, resourceGroup, subscription: subscriptionId };
+    } else {
+        throw Error('Error while building cluster context. Could not read config.');
+    }
 };
 
 const getCurrentContext = async function () {
