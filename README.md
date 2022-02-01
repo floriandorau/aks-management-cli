@@ -1,5 +1,6 @@
 # aks-management-cli
 
+[![Build Status](https://app.travis-ci.com/floriandorau/aks-management-cli.svg?branch=main)](https://app.travis-ci.com/floriandorau/aks-management-cli)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=floriandorau_aks-management-cli&metric=alert_status)](https://sonarcloud.io/dashboard?id=floriandorau_aks-management-cli)
 
 `aks` is a command line tool that let you manage the authorized IP ranges of managed AKS clusters. Therefore it uses `Azure CLI` and `kubectl` in the background.
