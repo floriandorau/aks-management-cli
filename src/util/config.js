@@ -9,6 +9,10 @@ const APP_DIR = '.aks-mgmt';
 const CONFIG_FILE_NAME = 'config.yml';
 const APP_PATH = join(homedir(), APP_DIR);
 
+const props = {
+    authorizedIp: 'authorizedIp'
+};
+
 const getConfigPath = function () {
     return join(APP_PATH, CONFIG_FILE_NAME);
 };
@@ -57,4 +61,10 @@ const get = (prop) => {
     return config ? config[prop] : null;
 };
 
-module.exports = { existsConfig, get, getConfigPath, initConfig, readConfig, writeConfig };
+const set = (prop, value) => {
+    const config = readConfig();
+    config[prop] = value;
+    writeConfig(config);
+};
+
+module.exports = { existsConfig, get, getConfigPath, initConfig, readConfig, set, writeConfig, props};
