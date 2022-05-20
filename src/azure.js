@@ -41,7 +41,7 @@ const fetchAuthorizedIpRanges = async ({ name, resourceGroup, subscription }) =>
     ]);
 };
 
-const addIp = async (ip, previousAuthorizedIp, context) => {
+const addIp = async (ip, context) => {
     let authorizedIpRanges = await fetchAuthorizedIpRanges(context);
 
     const ipCidr =  toCidrNotation(ip);
@@ -55,9 +55,9 @@ const addIp = async (ip, previousAuthorizedIp, context) => {
     authorizedIpRanges = authorizedIpRanges
         .filter(range => range !== DEFAULT_AUTHORIZED_IP_RANGE);
         
-    if(previousAuthorizedIp) {
-        console.log(`Removing previously authorized ip '${previousAuthorizedIp}' from authorized ip-ranges`);
-        const previousAuthorizedIpCidr = toCidrNotation(previousAuthorizedIp);
+    if(context.authorizedIp) {
+        console.log(`Removing previously authorized ip '${context.authorizedIp}' from authorized ip-ranges`);
+        const previousAuthorizedIpCidr = toCidrNotation(context.authorizedIp);
         authorizedIpRanges = authorizedIpRanges.filter(range => range !== previousAuthorizedIpCidr);
     }
 

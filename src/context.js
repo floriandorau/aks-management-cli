@@ -9,6 +9,30 @@ const list = function () {
     config.contexts.forEach(context => console.log(JSON.stringify(context, null, '  ')));
 };
 
+const saveAuthorizedIp = function(authorizedIp, {name}) {
+    if (!config || !config.contexts || config.contexts?.length === 0) {
+        return console.log('No contexts configured.');
+    }
+    
+    const context = config.contexts.filter(ctx => name in ctx)[0];
+    context[name] = {...context[name], authorizedIp};
+
+    writeConfig(config);  
+};
+
+const removeAuthorizedIp = function(authorizedIp, {name}) {
+    if (!config || !config.contexts || config.contexts?.length === 0) {
+        return console.log('No contexts configured.');
+    }
+    
+    const context = config.contexts.filter(ctx => name in ctx)[0];
+    
+    if(context[name].authorizedIp === authorizedIp) {
+        context[name] = {...context[name], authorizedIp: undefined};
+        writeConfig(config);  
+    }
+};
+
 const add = function (name, resourceGroup, subscriptionId) {
     try {
         if (config && config.contexts) {
@@ -56,4 +80,4 @@ const remove = function (name) {
     }
 };
 
-module.exports = { add, list, remove };
+module.exports = { add, list, remove, saveAuthorizedIp, removeAuthorizedIp };

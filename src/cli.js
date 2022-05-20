@@ -1,9 +1,10 @@
 const az = require('./azure');
 
 const { isIpV4 } = require('./validate');
+const { saveAuthorizedIp, removeAuthorizedIp } = require('./context');
 const { printAuthorizedIpRanges, printError } = require('./output');
 const { buildClusterContext, getCurrentContext } = require('./kubectl');
-const { initConfig: createConfig, existsConfig, getConfigPath, readConfig, set, get, props} = require('./util/config');
+const { initConfig: createConfig, existsConfig, getConfigPath, readConfig} = require('./util/config');
 
 const initConfig = function () {
     const configPath = getConfigPath();
@@ -27,13 +28,11 @@ const showConfig = function () {
 const addIp = async function (ip) {
     isIpV4(ip);
 
-    const authorizedIp = get(props.authorizedIp);
-
     console.log(`Adding '${ip}' to AKS authorized ip range`);
-    const context = await buildClusterContext();
-    az.addIp(ip, authorizedIp, context)
+    const context = await buildClusterContext();    
+    az.addIp(ip, context)
         .then(ipRanges => printAuthorizedIpRanges(ipRanges, context))
-        .then(() => set(props.authorizedIp, ip))
+        .then(() => saveAuthorizedIp(ip, context))
         .catch(err => printError(`Error while adding ip ${ip}`, err));
 };
 
@@ -45,7 +44,7 @@ const removeIp = async function (ip) {
     const context = await buildClusterContext();
     az.removeIp(ip, context)
         .then(ipRanges => printAuthorizedIpRanges(ipRanges, context))
-        .then(() => ip === get(props.authorizedIp) && set(props.authorizedIp, undefined))
+        .then(() => removeAuthorizedIp(ip, context))
         .catch(err => printError('Error while removing ip address', err));
 };
 
