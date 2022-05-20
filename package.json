@@ -21,7 +21,7 @@
     "public-ip": "^4.0.2",
     "term-size": "^2.2.1",
     "yaml": "1.10.2",
-    "yargs": "^17.0.1"
+    "yargs": "^17.5.1"
   },
   "scripts": {
     "start": "node ./bin/aks",
