@@ -55,7 +55,6 @@ const listIpRange = async function () {
         .catch(err => printError('Error while listing ip ranges', err));
 };
 
-
 const getCredentials = async function () {
     const context = await buildClusterContext();
     az.getCredentials(context)        
