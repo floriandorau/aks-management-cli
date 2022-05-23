@@ -30,7 +30,7 @@
         "fmt": "./node_modules/.bin/prettier -w ."
     },
     "devDependencies": {
-        "eslint": "^7.11.0",
+        "eslint": "^8.16.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.0.0",
         "prettier": "2.6.2"
