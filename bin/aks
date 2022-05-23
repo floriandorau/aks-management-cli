@@ -5,23 +5,24 @@ const termSize = require('term-size');
 const logSymbols = require('log-symbols');
 const pkgJson = require('../package.json');
 
-const handleError = (msg, err) => {    
-    if (err) {        
+const handleError = (msg, err) => {
+    if (err) {
         console.log('Error while unning command');
         console.error(logSymbols.error, err.message);
         console.log('\n');
-    }
-    else if (msg) {
+    } else if (msg) {
         console.log(msg);
     }
 
     process.exit(1);
 };
 
-const checkInternetConnection = () => 
-    isOnline().then((online) => online ? Promise.resolve() : Promise.reject());
+const checkInternetConnection = () =>
+    isOnline().then((online) =>
+        online ? Promise.resolve() : Promise.reject()
+    );
 
-(() =>  { 
+(() => {
     const spinner = ora('Checking internet connection').start();
     checkInternetConnection()
         .then(() => {
@@ -34,9 +35,9 @@ const checkInternetConnection = () =>
                 .wrap(termSize().columns)
                 .help('help')
                 .fail(handleError)
-                .epilogue(`for more information, see ${pkgJson.homepage}`)
-                .argv;
-        }).catch(() => {
+                .epilogue(`for more information, see ${pkgJson.homepage}`).argv;
+        })
+        .catch(() => {
             spinner.fail('No internet connection');
             process.exit(1);
         });

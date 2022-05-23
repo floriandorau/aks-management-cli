@@ -10,7 +10,7 @@ const CONFIG_FILE_NAME = 'config.yml';
 const APP_PATH = join(homedir(), APP_DIR);
 
 const props = {
-    authorizedIp: 'authorizedIp'
+    authorizedIp: 'authorizedIp',
 };
 
 const getConfigPath = function () {
@@ -43,7 +43,9 @@ const initConfig = function () {
 const readConfig = function () {
     const configPath = getConfigPath();
     if (!existsConfig(configPath)) {
-        throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
+        throw new Error(
+            `No config.yml found. Please make sure that you have a valid config at ${configPath}.`
+        );
     }
     return readConfigFile(configPath);
 };
@@ -51,7 +53,9 @@ const readConfig = function () {
 const writeConfig = function (config) {
     const configPath = getConfigPath();
     if (!existsConfig(configPath)) {
-        throw new Error('No config.yml found. Please make sure that you have a valid config at ' + configPath);
+        throw new Error(
+            `No config.yml found. Please make sure that you have a valid config at ${configPath}`
+        );
     }
     writeConfigFile(configPath, config);
 };
@@ -67,4 +71,13 @@ const set = (prop, value) => {
     writeConfig(config);
 };
 
-module.exports = { existsConfig, get, getConfigPath, initConfig, readConfig, set, writeConfig, props};
+module.exports = {
+    existsConfig,
+    get,
+    getConfigPath,
+    initConfig,
+    readConfig,
+    set,
+    writeConfig,
+    props,
+};

@@ -1,4 +1,3 @@
-
 const isIp = require('is-ip');
 
 const isIpV4 = function (ip) {

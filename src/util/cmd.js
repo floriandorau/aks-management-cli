@@ -10,11 +10,11 @@ const exec = (cmd, args, options = { debug: false }) => {
 
         const spawnedProcess = child_process.spawn(cmd, args);
 
-        spawnedProcess.stdout.on('data', data => stdoutData.push(data));
-        spawnedProcess.stderr.on('data', data => stderrData.push(data));
-        spawnedProcess.on('error', err => reject(err));
+        spawnedProcess.stdout.on('data', (data) => stdoutData.push(data));
+        spawnedProcess.stderr.on('data', (data) => stderrData.push(data));
+        spawnedProcess.on('error', (err) => reject(err));
 
-        spawnedProcess.on('close', code => {
+        spawnedProcess.on('close', (code) => {
             if (options.debug) {
                 console.debug(`process closed with code ${code}`);
             }

@@ -6,59 +6,73 @@ const list = function () {
         return console.log('No contexts configured.');
     }
 
-    config.contexts.forEach(context => console.log(JSON.stringify(context, null, '  ')));
+    config.contexts.forEach((context) =>
+        console.log(JSON.stringify(context, null, '  '))
+    );
 };
 
-const saveAuthorizedIp = function(authorizedIp, {name}) {
+const saveAuthorizedIp = function (authorizedIp, { name }) {
     if (!config || !config.contexts || config.contexts?.length === 0) {
         return console.log('No contexts configured.');
     }
-    
-    const context = config.contexts.filter(ctx => name in ctx)[0];
-    context[name] = {...context[name], authorizedIp};
 
-    writeConfig(config);  
+    const context = config.contexts.filter((ctx) => name in ctx)[0];
+    context[name] = { ...context[name], authorizedIp };
+
+    writeConfig(config);
 };
 
-const removeAuthorizedIp = function(authorizedIp, {name}) {
+const removeAuthorizedIp = function (authorizedIp, { name }) {
     if (!config || !config.contexts || config.contexts?.length === 0) {
         return console.log('No contexts configured.');
     }
-    
-    const context = config.contexts.filter(ctx => name in ctx)[0];
-    
-    if(context[name].authorizedIp === authorizedIp) {
-        context[name] = {...context[name], authorizedIp: undefined};
-        writeConfig(config);  
+
+    const context = config.contexts.filter((ctx) => name in ctx)[0];
+
+    if (context[name].authorizedIp === authorizedIp) {
+        context[name] = { ...context[name], authorizedIp: undefined };
+        writeConfig(config);
     }
 };
 
 const add = function (name, resourceGroup, subscriptionId) {
     try {
         if (config && config.contexts) {
-            const context = config.contexts.filter(ctx => name in ctx)[0];
+            const context = config.contexts.filter((ctx) => name in ctx)[0];
             if (context) {
-                console.log(`Context with name '${name}' already exists: '${JSON.stringify(context, null, '  ')} '`);
+                console.log(
+                    `Context with name '${name}' already exists: '${JSON.stringify(
+                        context,
+                        null,
+                        '  '
+                    )} '`
+                );
             } else {
-                console.log(`Adding context '${resourceGroup}/${name}@${subscriptionId}'`);
+                console.log(
+                    `Adding context '${resourceGroup}/${name}@${subscriptionId}'`
+                );
                 config.contexts.push({
                     [name]: {
                         name,
                         resourceGroup,
-                        subscriptionId
-                    }
+                        subscriptionId,
+                    },
                 });
             }
         } else {
-            console.log(`Adding context '${resourceGroup}/${name}@${subscriptionId}'`);
+            console.log(
+                `Adding context '${resourceGroup}/${name}@${subscriptionId}'`
+            );
             config = {
-                contexts: [{
-                    [name]: {
-                        name,
-                        resourceGroup,
-                        subscriptionId
-                    }
-                }]
+                contexts: [
+                    {
+                        [name]: {
+                            name,
+                            resourceGroup,
+                            subscriptionId,
+                        },
+                    },
+                ],
             };
         }
         writeConfig(config);
@@ -70,7 +84,7 @@ const add = function (name, resourceGroup, subscriptionId) {
 const remove = function (name) {
     try {
         if (config && config.contexts) {
-            const contexts = config.contexts.filter(ctx => !(name in ctx));
+            const contexts = config.contexts.filter((ctx) => !(name in ctx));
             config.contexts = contexts;
         }
         writeConfig(config);

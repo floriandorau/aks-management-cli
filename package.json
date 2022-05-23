@@ -1,37 +1,41 @@
 {
-  "name": "@floriandorau/aks-management-cli",
-  "version": "1.2.1-rc.0",
-  "main": "index.js",
-  "license": "MIT",
-  "homepage": "https://github.com/floriandorau/aks-management-cli",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/floriandorau/aks-management-cli.git"
-  },
-  "author": "floriandorau",
-  "bin": {
-    "aks": "bin/aks"
-  },
-  "dependencies": {
-    "cli-table3": "^0.6.0",
-    "is-in-subnet": "^4.0.1",
-    "is-ip": "^3.1.0",
-    "is-online": "^9.0.1",
-    "log-symbols": "^4.1.0",
-    "ora": "^5.4.1",
-    "public-ip": "^4.0.2",
-    "term-size": "^2.2.1",
-    "yaml": "1.10.2",
-    "yargs": "^17.0.1"
-  },
-  "scripts": {
-    "start": "node ./bin/aks",
-    "lint": "eslint ./src ./bin/aks"
-  },
-  "devDependencies": {
-    "eslint": "^7.11.0"
-  },
-  "engines": {
-    "node": ">=14.1.0"
-  }
+    "name": "@floriandorau/aks-management-cli",
+    "version": "1.2.1-rc.0",
+    "main": "index.js",
+    "license": "MIT",
+    "homepage": "https://github.com/floriandorau/aks-management-cli",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/floriandorau/aks-management-cli.git"
+    },
+    "author": "floriandorau",
+    "bin": {
+        "aks": "bin/aks"
+    },
+    "dependencies": {
+        "cli-table3": "^0.6.0",
+        "is-in-subnet": "^4.0.1",
+        "is-ip": "^3.1.0",
+        "is-online": "^9.0.1",
+        "log-symbols": "^4.1.0",
+        "ora": "^5.4.1",
+        "public-ip": "^4.0.2",
+        "term-size": "^2.2.1",
+        "yaml": "1.10.2",
+        "yargs": "^17.0.1"
+    },
+    "scripts": {
+        "start": "node ./bin/aks",
+        "lint": "eslint ./src ./bin/aks",
+        "fmt": "./node_modules/.bin/prettier -w ."
+    },
+    "devDependencies": {
+        "eslint": "^7.11.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "prettier": "2.6.2"
+    },
+    "engines": {
+        "node": ">=14.1.0"
+    }
 }

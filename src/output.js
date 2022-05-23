@@ -11,11 +11,15 @@ const printAuthorizedIpRanges = async function (authorizedIpRanges, context) {
     const table = new Table({
         head: ['#', 'Authorized ip range', 'Matches your ip'],
         colAligns: ['left', 'left', 'center'],
-        style: { head: [] }
+        style: { head: [] },
     });
 
     authorizedIpRanges.forEach((ipRange, idx) => {
-        table.push([idx + 1, ipRange, isInSubnet(currentIp, ipRange) ? logSymbols.success : '']);
+        table.push([
+            idx + 1,
+            ipRange,
+            isInSubnet(currentIp, ipRange) ? logSymbols.success : '',
+        ]);
     });
 
     console.log('\n');
