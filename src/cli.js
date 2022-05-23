@@ -26,7 +26,7 @@ const initConfig = function () {
 const showConfig = function () {
     if (!existsConfig(getConfigPath())) {
         return console.log(
-            "Config does not exist yet. Please run 'init' to create intial configuration."
+            'Config does not exist yet. Please run "init" to create intial configuration.'
         );
     }
 

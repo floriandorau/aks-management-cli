@@ -27,7 +27,8 @@
     "scripts": {
         "start": "node ./bin/aks",
         "lint": "eslint ./src ./bin/aks",
-        "fmt": "./node_modules/.bin/prettier -w ."
+        "lint:fix": "eslint --fix ./src ./bin/aks",
+        "fmt": "prettier -w ."
     },
     "devDependencies": {
         "eslint": "^7.11.0",
