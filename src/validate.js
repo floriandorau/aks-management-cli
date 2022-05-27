@@ -1,7 +1,5 @@
-const isIp = require('is-ip');
+import isIp from 'is-ip';
 
-const isIpV4 = function (ip) {
+export const isIpV4 = (ip) => {
     if (!isIp.v4(ip)) throw Error(`'${ip}' is not a valid IPv4 address.`);
 };
-
-module.exports = { isIpV4 };

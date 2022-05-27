@@ -1,6 +1,8 @@
-const { initConfig } = require('../../src/cli');
+import { initConfig } from '../../src/cli.js';
 
-exports.command = 'init';
-exports.desc = 'Initializes app directory with empty config.yml';
-exports.builder = () => {};
-exports.handler = () => initConfig();
+export default {
+    command: 'init',
+    desc: 'Initializes app diretory with empty config.yml',
+    builder: () => {},
+    handler: () => initConfig(),
+};

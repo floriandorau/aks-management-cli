@@ -1,13 +1,17 @@
 #!/usr/bin/env node
-const ora = require('ora');
-const isOnline = require('is-online');
-const termSize = require('term-size');
-const logSymbols = require('log-symbols');
-const pkgJson = require('../package.json');
+import ora from 'ora';
+import termSize from 'term-size';
+import isOnline from 'is-online';
+import logSymbols from 'log-symbols';
 
-const handleError = (msg, err) => {
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { commands } from '../cmds/index.js';
+
+const handleError = function (msg, err) {
     if (err) {
-        console.log('Error while unning command');
+        console.log('\n');
+        console.log('Error running command');
         console.error(logSymbols.error, err.message);
         console.log('\n');
     } else if (msg) {
@@ -27,18 +31,22 @@ const checkInternetConnection = () =>
     checkInternetConnection()
         .then(() => {
             spinner.succeed('Connected');
-            require('yargs/yargs')(process.argv.slice(2))
-                .commandDir('../cmds')
+            yargs(hideBin(process.argv))
+                .command(commands)
                 .demandCommand()
                 .version()
                 .completion()
                 .wrap(termSize().columns)
                 .help('help')
                 .fail(handleError)
-                .epilogue(`for more information, see ${pkgJson.homepage}`).argv;
+                .epilogue(
+                    'for more information, see https://github.com/floriandorau/aks-management-cli'
+                ).argv;
         })
         .catch(() => {
-            spinner.fail('No internet connection');
+            spinner.fail(
+                'No internet connection. Please try again with intenet connected.'
+            );
             process.exit(1);
         });
 })();

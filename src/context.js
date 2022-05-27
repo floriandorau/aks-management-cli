@@ -1,7 +1,8 @@
-const { readConfig, writeConfig } = require('./util/config');
+import { readConfig, writeConfig } from './util/config.js';
+
 let config = readConfig();
 
-const list = function () {
+export const list = function () {
     if (!config || !config.contexts || config.contexts?.length === 0) {
         return console.log('No contexts configured.');
     }
@@ -35,7 +36,7 @@ const removeAuthorizedIp = function (authorizedIp, { name }) {
     }
 };
 
-const add = function (name, resourceGroup, subscriptionId) {
+export const add = function (name, resourceGroup, subscriptionId) {
     try {
         if (config && config.contexts) {
             const context = config.contexts.filter((ctx) => name in ctx)[0];
@@ -81,7 +82,7 @@ const add = function (name, resourceGroup, subscriptionId) {
     }
 };
 
-const remove = function (name) {
+export const remove = function (name) {
     try {
         if (config && config.contexts) {
             const contexts = config.contexts.filter((ctx) => !(name in ctx));
@@ -93,5 +94,3 @@ const remove = function (name) {
         console.error(`Error while removing context '${name}'`, err);
     }
 };
-
-module.exports = { add, list, remove, saveAuthorizedIp, removeAuthorizedIp };

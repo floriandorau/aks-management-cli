@@ -1,23 +1,25 @@
-const publicIp = require('public-ip');
+import publicIp from 'public-ip';
 
-const { addIp } = require('../../src/cli');
+import { addIp } from '../../src/cli.js';
 
-exports.command = 'add-current';
-exports.desc = 'Adds your current public ip to AKS authorized ip-ranges';
-exports.builder = () => {};
-exports.handler = () => {
-    publicIp
-        .v4()
-        .then((currentIp) => {
-            console.log(
-                `Your public ip address '${currentIp}' will be added to authorized ip ranges`
+export default {
+    command: 'add-current',
+    desc: 'Adds your current public ip to AKS authorized ip-ranges',
+    builder: () => {},
+    handler: () => {
+        publicIp
+            .v4()
+            .then((currentIp) => {
+                console.log(
+                    `Your public ip address '${currentIp}' will be added to authorized ip ranges`
+                );
+                addIp(currentIp);
+            })
+            .catch((err) =>
+                console.error(
+                    'Error while gathering your current public ip address',
+                    err
+                )
             );
-            addIp(currentIp);
-        })
-        .catch((err) =>
-            console.error(
-                'Error while gathering your current public ip address',
-                err
-            )
-        );
+    },
 };

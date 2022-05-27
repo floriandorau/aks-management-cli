@@ -1,13 +1,15 @@
-const { removeIp } = require('../../src/cli');
+import { removeIp } from '../../src/cli.js';
 
-exports.command = 'remove <ip>';
-exports.desc = 'Removes <ip> from AKS authorized ip-ranges';
-exports.builder = (yargs) => {
-    yargs.positional('ip', {
-        describe: 'ip to remove from authorized ip-ranges',
-        type: 'string',
-    });
-};
-exports.handler = (argv) => {
-    removeIp(argv.ip);
+export default {
+    command: 'remove <ip>',
+    desc: 'Removes <ip> from AKS authorized ip-ranges',
+    builder: (yargs) => {
+        yargs.positional('ip', {
+            describe: 'ip to remove from authorized ip-ranges',
+            type: 'string',
+        });
+    },
+    handler: (argv) => {
+        removeIp(argv.ip);
+    },
 };

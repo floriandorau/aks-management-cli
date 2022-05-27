@@ -1,8 +1,7 @@
-const { getCredentials } = require('../src/cli');
+import { getCredentials } from '../src/cli.js';
 
-exports.command = 'get-credentials';
-exports.desc = 'Get access credentials for a managed Kubernetes cluster';
-
-exports.builder = () => {};
-
-exports.handler = () => getCredentials();
+export default {
+    command: 'get-credentials',
+    desc: 'Get access credentials for a managed Kubernetes cluster',
+    handler: () => getCredentials(),
+};

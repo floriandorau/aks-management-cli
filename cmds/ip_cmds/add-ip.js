@@ -1,11 +1,13 @@
-const { addIp } = require('../../src/cli');
+import { addIp } from '../../src/cli.js';
 
-exports.command = 'add <ip>';
-exports.desc = 'Adds <ip> to AKS authorized ip-ranges';
-exports.builder = (yargs) => {
-    yargs.positional('ip', {
-        describe: 'ip to add from authorized ip-ranges',
-        type: 'string',
-    });
+export default {
+    command: 'add <ip>',
+    desc: 'Adds <ip> to AKS authorized ip-ranges',
+    builder: (yargs) => {
+        yargs.positional('ip', {
+            describe: 'ip to add from authorized ip-ranges',
+            type: 'string',
+        });
+    },
+    handler: (argv) => addIp(argv.ip),
 };
-exports.handler = (argv) => addIp(argv.ip);

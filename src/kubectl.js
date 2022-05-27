@@ -1,7 +1,7 @@
-const { exec } = require('./util/cmd');
-const { readConfig } = require('./util/config');
+import { exec } from './util/cmd.js';
+import { readConfig } from './util/config.js';
 
-const buildClusterContext = async function () {
+export const buildClusterContext = async function () {
     const config = readConfig();
     const currentContext = await getCurrentContext();
 
@@ -24,9 +24,7 @@ const buildClusterContext = async function () {
     }
 };
 
-const getCurrentContext = async function () {
+export const getCurrentContext = async function () {
     const currentContext = await exec('kubectl', ['config', 'current-context']);
     return currentContext.trim();
 };
-
-module.exports = { buildClusterContext, getCurrentContext };

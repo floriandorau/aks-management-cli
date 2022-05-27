@@ -1,6 +1,7 @@
-const { listIpRange } = require('../../src/cli');
+import { listIpRange } from '../../src/cli.js';
 
-exports.command = 'show-range';
-exports.desc = 'Prints current authorized ip-range of AKS';
-exports.builder = () => {};
-exports.handler = () => listIpRange();
+export default {
+    command: 'show-range',
+    desc: 'Prints current authorized ip-range of AKS',
+    handler: () => listIpRange(),
+};

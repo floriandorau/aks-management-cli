@@ -1,6 +1,7 @@
-const { showConfig } = require('../../src/cli');
+import { showConfig } from '../../src/cli.js';
 
-exports.command = 'show';
-exports.desc = 'Prints your current configuration';
-exports.builder = () => {};
-exports.handler = () => showConfig();
+export default {
+    command: 'show',
+    desc: 'Prints your current configuration',
+    handler: () => showConfig(),
+};
