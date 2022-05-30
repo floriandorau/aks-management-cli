@@ -12,7 +12,7 @@ export const list = function () {
     );
 };
 
-const saveAuthorizedIp = function (authorizedIp, { name }) {
+export const saveAuthorizedIp = function (authorizedIp, { name }) {
     if (!config || !config.contexts || config.contexts?.length === 0) {
         return console.log('No contexts configured.');
     }
@@ -23,7 +23,7 @@ const saveAuthorizedIp = function (authorizedIp, { name }) {
     writeConfig(config);
 };
 
-const removeAuthorizedIp = function (authorizedIp, { name }) {
+export const removeAuthorizedIp = function (authorizedIp, { name }) {
     if (!config || !config.contexts || config.contexts?.length === 0) {
         return console.log('No contexts configured.');
     }

@@ -2,6 +2,7 @@ import * as az from './azure.js';
 
 import { isIpV4 } from './validate.js';
 import { printAuthorizedIpRanges, printError } from './output.js';
+import { saveAuthorizedIp, removeAuthorizedIp } from './context.js';
 import { buildClusterContext, getCurrentContext } from './kubectl.js';
 import {
     initConfig as createConfig,

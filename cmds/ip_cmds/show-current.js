@@ -5,7 +5,6 @@ export default {
     desc: 'Prints your current public ip address',
     builder: () => {},
     handler: () => {
-        console.log('foo');
         publicIp
             .v4()
             .then((currentIp) =>

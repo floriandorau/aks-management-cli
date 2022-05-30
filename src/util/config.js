@@ -9,10 +9,6 @@ const APP_DIR = '.aks-mgmt';
 const CONFIG_FILE_NAME = 'config.yml';
 const APP_PATH = join(homedir(), APP_DIR);
 
-const props = {
-    authorizedIp: 'authorizedIp',
-};
-
 const _readConfigFile = function (path) {
     const file = readFileSync(path, 'utf8');
     return YAML.parse(file);
