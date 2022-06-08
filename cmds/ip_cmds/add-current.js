@@ -5,7 +5,6 @@ import { addIp } from '../../src/cli.js';
 export default {
     command: 'add-current',
     desc: 'Adds your current public ip to AKS authorized ip-ranges',
-    builder: () => {},
     handler: () => {
         publicIp
             .v4()

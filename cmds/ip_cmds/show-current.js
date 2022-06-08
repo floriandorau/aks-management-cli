@@ -3,7 +3,6 @@ import publicIp from 'public-ip';
 export default {
     command: 'show-current',
     desc: 'Prints your current public ip address',
-    builder: () => {},
     handler: () => {
         publicIp
             .v4()

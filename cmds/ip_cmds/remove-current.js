@@ -5,7 +5,6 @@ import { removeIp } from '../../src/cli.js';
 export default {
     command: 'remove-current',
     desc: 'Removes current public ip from AKS authorized ip-ranges if exists',
-    builder: () => {},
     handler: () => {
         publicIp
             .v4()
