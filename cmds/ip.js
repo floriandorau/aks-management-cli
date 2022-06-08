@@ -1,6 +1,9 @@
-exports.command = 'ip <command>';
-exports.desc = 'Manage authorized ip range of managed Kubernetes cluster';
-exports.builder = (yargs) =>
-    yargs.commandDir('ip_cmds').usage('Usage: $0 ip <command>');
+import { commands } from './ip_cmds/index.js';
 
-exports.handler = () => {};
+export default {
+    command: 'ip <command>',
+    desc: 'Manage authorized ip range of managed Kubernetes cluster',
+    builder: (yargs) => {
+        return yargs.usage('Usage: $0 ip <command>').command(commands);
+    },
+};

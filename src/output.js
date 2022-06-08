@@ -1,11 +1,14 @@
-const Table = require('cli-table3');
+import Table from 'cli-table3';
 
-const publicIp = require('public-ip');
-const logSymbols = require('log-symbols');
+import publicIp from 'public-ip';
+import logSymbols from 'log-symbols';
 
-const { isInSubnet } = require('is-in-subnet');
+import { isInSubnet } from 'is-in-subnet';
 
-const printAuthorizedIpRanges = async function (authorizedIpRanges, context) {
+export const printAuthorizedIpRanges = async function (
+    authorizedIpRanges,
+    context
+) {
     const currentIp = await publicIp.v4();
 
     const table = new Table({
@@ -28,9 +31,7 @@ const printAuthorizedIpRanges = async function (authorizedIpRanges, context) {
     console.log('\n');
 };
 
-const printError = function (message, err) {
+export const printError = function (message, err) {
     console.log(logSymbols.error, message, '\n');
     console.log(err.message);
 };
-
-module.exports = { printAuthorizedIpRanges, printError };

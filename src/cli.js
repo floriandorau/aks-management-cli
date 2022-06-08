@@ -1,17 +1,17 @@
-const az = require('./azure');
+import * as az from './azure.js';
 
-const { isIpV4 } = require('./validate');
-const { saveAuthorizedIp, removeAuthorizedIp } = require('./context');
-const { printAuthorizedIpRanges, printError } = require('./output');
-const { buildClusterContext, getCurrentContext } = require('./kubectl');
-const {
-    initConfig: createConfig,
+import { isIpV4 } from './validate.js';
+import { printAuthorizedIpRanges, printError } from './output.js';
+import { saveAuthorizedIp, removeAuthorizedIp } from './context.js';
+import { buildClusterContext, getCurrentContext } from './kubectl.js';
+import {
+    initConfig as createConfig,
     existsConfig,
     getConfigPath,
     readConfig,
-} = require('./util/config');
+} from './util/config.js';
 
-const initConfig = function () {
+export const initConfig = function () {
     const configPath = getConfigPath();
     if (existsConfig(configPath)) {
         return console.log(
@@ -23,7 +23,7 @@ const initConfig = function () {
     createConfig();
 };
 
-const showConfig = function () {
+export const showConfig = function () {
     if (!existsConfig(getConfigPath())) {
         return console.log(
             'Config does not exist yet. Please run "init" to create intial configuration.'
@@ -36,7 +36,7 @@ const showConfig = function () {
     );
 };
 
-const addIp = async function (ip) {
+export const addIp = async function (ip) {
     isIpV4(ip);
 
     console.log(`Adding '${ip}' to AKS authorized ip range`);
@@ -47,7 +47,7 @@ const addIp = async function (ip) {
         .catch((err) => printError(`Error while adding ip ${ip}`, err));
 };
 
-const removeIp = async function (ip) {
+export const removeIp = async function (ip) {
     isIpV4(ip);
 
     console.log(`Removing ${ip} from authorized ip ranges`);
@@ -59,14 +59,14 @@ const removeIp = async function (ip) {
         .catch((err) => printError('Error while removing ip address', err));
 };
 
-const listIpRange = async function () {
+export const listIpRange = async function () {
     const context = await buildClusterContext();
     az.fetchAuthorizedIpRanges(context)
         .then((ipRanges) => printAuthorizedIpRanges(ipRanges, context))
         .catch((err) => printError('Error while listing ip ranges', err));
 };
 
-const getCredentials = async function () {
+export const getCredentials = async function () {
     const context = await buildClusterContext();
     az.getCredentials(context).catch((err) =>
         printError(
@@ -76,7 +76,7 @@ const getCredentials = async function () {
     );
 };
 
-const showCurrentContext = function () {
+export const showCurrentContext = function () {
     getCurrentContext()
         .then((clusterContext) =>
             console.log(
@@ -84,14 +84,4 @@ const showCurrentContext = function () {
             )
         )
         .catch((err) => printError('Error while reading cluster context', err));
-};
-
-module.exports = {
-    addIp,
-    getCredentials,
-    initConfig,
-    listIpRange,
-    removeIp,
-    showConfig,
-    showCurrentContext,
 };

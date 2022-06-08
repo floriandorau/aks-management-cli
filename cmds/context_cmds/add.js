@@ -1,9 +1,8 @@
-const { add } = require('../../src/context');
+import { add } from '../../src/context.js';
 
-exports.command = 'add <cluster-name> <resource-group> <subscription-id>';
-exports.desc =
-    'Adds cluster with <cluster-name> of <resource-group> in <subscription-id> to config';
-exports.builder = () => {};
-exports.handler = (argv) => {
-    add(argv.clusterName, argv.resourceGroup, argv.subscriptionId);
+export default {
+    command: 'add <cluster-name> <resource-group> <subscription-id>',
+    desc: 'Adds cluster with <cluster-name> of <resource-group> in <subscription-id> to config',
+    handler: (argv) =>
+        add(argv.clusterName, argv.resourceGroup, argv.subscriptionId),
 };

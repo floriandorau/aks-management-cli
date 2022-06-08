@@ -1,6 +1,7 @@
-const { list } = require('../../src/context');
+import { list } from '../../src/context.js';
 
-exports.command = 'list';
-exports.desc = 'Lists all your configured contexts';
-exports.builder = () => {};
-exports.handler = () => list();
+export default {
+    command: 'list',
+    desc: 'Lists all your configured contexts',
+    handler: () => list(),
+};

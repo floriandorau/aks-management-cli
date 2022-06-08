@@ -1,38 +1,34 @@
-const YAML = require('yaml');
+import YAML from 'yaml';
 
-const { join } = require('path');
-const { homedir } = require('os');
-const { existsSync, readFileSync, writeFileSync, mkdirSync } = require('fs');
+import { join } from 'path';
+import { homedir } from 'os';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 
 const CONFIG_VERSION = 1;
 const APP_DIR = '.aks-mgmt';
 const CONFIG_FILE_NAME = 'config.yml';
 const APP_PATH = join(homedir(), APP_DIR);
 
-const props = {
-    authorizedIp: 'authorizedIp',
-};
-
-const getConfigPath = function () {
-    return join(APP_PATH, CONFIG_FILE_NAME);
-};
-
-const existsConfig = function (configPath) {
-    return existsSync(configPath);
-};
-
-const readConfigFile = function (path) {
+const _readConfigFile = function (path) {
     const file = readFileSync(path, 'utf8');
     return YAML.parse(file);
 };
 
-const writeConfigFile = function (path, config) {
-    const existingConfig = readConfigFile(path);
+const _writeConfigFile = function (path, config) {
+    const existingConfig = _readConfigFile(path);
     const configString = YAML.stringify(Object.assign(existingConfig, config));
     writeFileSync(path, configString, { encoding: 'utf8' });
 };
 
-const initConfig = function () {
+export const getConfigPath = function () {
+    return join(APP_PATH, CONFIG_FILE_NAME);
+};
+
+export const existsConfig = function (configPath) {
+    return existsSync(configPath);
+};
+
+export const initConfig = function () {
     if (!existsSync(APP_PATH)) mkdirSync(APP_PATH);
 
     const configPath = getConfigPath();
@@ -40,44 +36,27 @@ const initConfig = function () {
     writeFileSync(configPath, configString, { encoding: 'utf8' });
 };
 
-const readConfig = function () {
+export const readConfig = function () {
     const configPath = getConfigPath();
     if (!existsConfig(configPath)) {
         throw new Error(
             `No config.yml found. Please make sure that you have a valid config at ${configPath}.`
         );
     }
-    return readConfigFile(configPath);
+    return _readConfigFile(configPath);
 };
 
-const writeConfig = function (config) {
+export const writeConfig = function (config) {
     const configPath = getConfigPath();
     if (!existsConfig(configPath)) {
         throw new Error(
             `No config.yml found. Please make sure that you have a valid config at ${configPath}`
         );
     }
-    writeConfigFile(configPath, config);
+    _writeConfigFile(configPath, config);
 };
 
-const get = (prop) => {
+export const get = (prop) => {
     const config = readConfig();
     return config ? config[prop] : null;
-};
-
-const set = (prop, value) => {
-    const config = readConfig();
-    config[prop] = value;
-    writeConfig(config);
-};
-
-module.exports = {
-    existsConfig,
-    get,
-    getConfigPath,
-    initConfig,
-    readConfig,
-    set,
-    writeConfig,
-    props,
 };

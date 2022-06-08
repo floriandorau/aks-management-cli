@@ -1,12 +1,12 @@
-const ora = require('ora');
+import ora from 'ora';
 
-const { exec } = require('./util/cmd');
+import { exec } from './util/cmd.js';
 
 const DEFAULT_AUTHORIZED_IP_RANGE = '0.0.0.0/32';
 
 const toCidrNotation = (ip) => `${ip}/32`;
 
-const assertContext = (name, resourceGroup, subscription) => {
+const _assertContext = (name, resourceGroup, subscription) => {
     if (!name) {
         throw Error(
             'No cluster name given. Check "kubectl config current-context"'
@@ -24,8 +24,8 @@ const assertContext = (name, resourceGroup, subscription) => {
     }
 };
 
-const getCredentials = async ({ name, resourceGroup, subscription }) => {
-    assertContext(name, resourceGroup, subscription);
+export const getCredentials = async ({ name, resourceGroup, subscription }) => {
+    _assertContext(name, resourceGroup, subscription);
     return _runAz(
         `Get credentials for cluster ${resourceGroup}/${name}`,
         [
@@ -43,12 +43,12 @@ const getCredentials = async ({ name, resourceGroup, subscription }) => {
     );
 };
 
-const fetchAuthorizedIpRanges = async ({
+export const fetchAuthorizedIpRanges = async ({
     name,
     resourceGroup,
     subscription,
 }) => {
-    assertContext(name, resourceGroup, subscription);
+    _assertContext(name, resourceGroup, subscription);
     return _runAz(
         `Fetching authorized ip-ranges from ${resourceGroup}/${name}`,
         [
@@ -64,7 +64,7 @@ const fetchAuthorizedIpRanges = async ({
     );
 };
 
-const addIp = async (ip, context) => {
+export const addIp = async (ip, context) => {
     let authorizedIpRanges = await fetchAuthorizedIpRanges(context);
 
     const ipCidr = toCidrNotation(ip);
@@ -93,7 +93,7 @@ const addIp = async (ip, context) => {
     return _updateAuthorizedIpRanges(newAuthorizedIpRanges, context);
 };
 
-const removeIp = async (ip, context) => {
+export const removeIp = async (ip, context) => {
     let remoteAuthorizedIpRanges = await fetchAuthorizedIpRanges(context);
 
     const ipCidr = toCidrNotation(ip);
@@ -115,7 +115,7 @@ const _updateAuthorizedIpRanges = async (
     authorizedIpRanges,
     { name, resourceGroup, subscription }
 ) => {
-    assertContext(name, resourceGroup, subscription);
+    _assertContext(name, resourceGroup, subscription);
 
     const ipRanges = Array.from(authorizedIpRanges).join(', ');
     return _runAz(`Updating authorized ip-ranges to [${ipRanges}]`, [
@@ -158,5 +158,3 @@ const _runAz = async (
         throw e;
     }
 };
-
-module.exports = { getCredentials, addIp, removeIp, fetchAuthorizedIpRanges };

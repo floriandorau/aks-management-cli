@@ -1,5 +1,9 @@
-exports.command = 'context <command>';
-exports.desc = 'Manage aks context configurations';
-exports.builder = (yargs) => {
-    yargs.usage('Usage: $0 context <command>').commandDir('context_cmds');
+import { commands } from './context_cmds/index.js';
+
+export default {
+    command: 'context <command>',
+    desc: 'Manage aks context configurations',
+    builder: (yargs) => {
+        yargs.usage('Usage: $0 context <command>').command(commands);
+    },
 };

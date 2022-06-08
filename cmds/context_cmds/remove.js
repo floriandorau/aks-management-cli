@@ -1,6 +1,7 @@
-const { remove } = require('../../src/context');
+import { remove } from '../../src/context.js';
 
-exports.command = 'remove <name>';
-exports.desc = 'Removes context with <name> from config';
-exports.builder = () => {};
-exports.handler = (argv) => remove(argv.name);
+export default {
+    command: 'remove <name>',
+    desc: 'Removes context with <name> from config',
+    handler: (argv) => remove(argv.name),
+};

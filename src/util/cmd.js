@@ -1,6 +1,6 @@
-const child_process = require('child_process');
+import child_process from 'child_process';
 
-const exec = (cmd, args, options = { debug: false }) => {
+export const exec = (cmd, args, options = { debug: false }) => {
     const stdoutData = [];
     const stderrData = [];
     return new Promise((resolve, reject) => {
@@ -27,5 +27,3 @@ const exec = (cmd, args, options = { debug: false }) => {
         });
     });
 };
-
-module.exports = { exec };

@@ -3,6 +3,7 @@
     "version": "1.2.1",
     "main": "index.js",
     "license": "MIT",
+    "type": "module",
     "homepage": "https://github.com/floriandorau/aks-management-cli",
     "repository": {
         "type": "git",
@@ -10,7 +11,7 @@
     },
     "author": "floriandorau",
     "bin": {
-        "aks": "bin/aks"
+        "aks": "bin/aks.js"
     },
     "dependencies": {
         "cli-table3": "^0.6.0",
@@ -22,12 +23,12 @@
         "public-ip": "^4.0.2",
         "term-size": "^2.2.1",
         "yaml": "1.10.2",
-        "yargs": "^17.0.1"
+        "yargs": "^17.5.1"
     },
     "scripts": {
-        "start": "node ./bin/aks",
-        "lint": "eslint ./src ./bin/aks",
-        "lint:fix": "eslint --fix ./src ./bin/aks",
+        "start": "node ./bin/aks.js",
+        "lint": "eslint ./src ./bin/aks.js",
+        "lint:fix": "eslint --fix ./src ./bin/aks.js",
         "fmt": "prettier -w ."
     },
     "devDependencies": {
@@ -37,6 +38,6 @@
         "prettier": "2.6.2"
     },
     "engines": {
-        "node": ">=14.1.0"
+        "node": ">=14.16.0"
     }
 }

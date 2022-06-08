@@ -1,8 +1,7 @@
-const { showCurrentContext } = require('../../src/cli');
+import { showCurrentContext } from '../../src/cli.js';
 
-exports.command = 'current';
-exports.desc = 'Prints your current kubectl context';
-
-exports.builder = () => {};
-
-exports.handler = () => showCurrentContext();
+export default {
+    command: 'current',
+    desc: 'Prints your current kubectl context',
+    handler: () => showCurrentContext(),
+};
