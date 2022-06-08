@@ -31,6 +31,7 @@ const checkInternetConnection = () =>
     checkInternetConnection()
         .then(() => {
             spinner.succeed('Connected');
+            //NOSONAR
             yargs(hideBin(process.argv))
                 .command(commands)
                 .demandCommand()
