@@ -39,41 +39,55 @@ export const showConfig = function () {
 export const addIp = async function (ip) {
     isIpV4(ip);
 
-    console.log(`Adding '${ip}' to AKS authorized ip range`);
+    console.log(`Adding '${ip}' to AKS authorized ip-ranges`);
 
     const context = await buildClusterContext();
     az.addIp(ip, context)
         .then((ipRanges) => printAuthorizedIpRanges(ipRanges, context))
         .then(() => saveAuthorizedIp(ip, context))
-        .catch((err) => printError(`Error while adding ip ${ip}`, err));
+        .catch((err) =>
+            printError(
+                `Error while adding ip ${ip} to authorized ip-ranges`,
+                err
+            )
+        );
 };
 
 export const removeIp = async function (ip) {
     isIpV4(ip);
 
-    console.log(`Removing ${ip} from authorized ip ranges`);
+    console.log(`Removing ${ip} from AKS authorized ip-ranges`);
 
     const context = await buildClusterContext();
     az.removeIp(ip, context)
         .then((ipRanges) => printAuthorizedIpRanges(ipRanges, context))
         .then(() => removeAuthorizedIp(ip, context))
-        .catch((err) => printError('Error while removing ip address', err));
+        .catch((err) =>
+            printError(
+                `Error while removing ip ${ip} from authorized ip-ranges`,
+                err
+            )
+        );
 };
 
 export const listIpRange = async function () {
     const context = await buildClusterContext();
     az.fetchAuthorizedIpRanges(context)
         .then((ipRanges) => printAuthorizedIpRanges(ipRanges, context))
-        .catch((err) => printError('Error while listing ip ranges', err));
+        .catch((err) =>
+            printError('Error while listing authorized ip-ranges', err)
+        );
 };
 
 export const clearIpRange = async function () {
-    console.log('Clearing existing authorized ip ranges');
+    console.log('Clearing existing AKS authorized ip-ranges');
 
     const context = await buildClusterContext();
     az.clearAuthorizedIpRanges(context)
-        .then(() => console.log('Authorized ip-range cleared'))
-        .catch((err) => printError('Error while clearing ip ranges', err));
+        .then(() => console.log('Authorized ip-ranges cleared'))
+        .catch((err) =>
+            printError('Error while clearing authorized ip-ranges', err)
+        );
 };
 
 export const getCredentials = async function () {
