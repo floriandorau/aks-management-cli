@@ -111,6 +111,10 @@ export const removeIp = async (ip, context) => {
     return _updateAuthorizedIpRanges(authorizedIpRanges, context);
 };
 
+export const clearAuthorizedIpRanges = async (context) => {
+    return _updateAuthorizedIpRanges([DEFAULT_AUTHORIZED_IP_RANGE], context);
+};
+
 const _updateAuthorizedIpRanges = async (
     authorizedIpRanges,
     { name, resourceGroup, subscription }

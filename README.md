@@ -72,6 +72,7 @@ Usage: aks ip <command>
 Commands:
   aks ip add-current     Adds your current public ip to AKS authorized ip-ranges
   aks ip add <ip>        Adds <ip> to AKS authorized ip-ranges
+  aks ip clear-range     Clears existing authorized ip-range of AKS
   aks ip remove-current  Removes current public ip from AKS authorized ip-ranges if exists
   aks ip remove <ip>     Removes <ip> from AKS authorized ip-ranges
   aks ip show-current    Prints your current public ip address

@@ -40,6 +40,7 @@ export const addIp = async function (ip) {
     isIpV4(ip);
 
     console.log(`Adding '${ip}' to AKS authorized ip range`);
+
     const context = await buildClusterContext();
     az.addIp(ip, context)
         .then((ipRanges) => printAuthorizedIpRanges(ipRanges, context))
@@ -64,6 +65,15 @@ export const listIpRange = async function () {
     az.fetchAuthorizedIpRanges(context)
         .then((ipRanges) => printAuthorizedIpRanges(ipRanges, context))
         .catch((err) => printError('Error while listing ip ranges', err));
+};
+
+export const clearIpRange = async function () {
+    console.log('Clearing existing authorized ip ranges');
+
+    const context = await buildClusterContext();
+    az.clearAuthorizedIpRanges(context)
+        .then(() => console.log('Authorized ip-range cleared'))
+        .catch((err) => printError('Error while clearing ip ranges', err));
 };
 
 export const getCredentials = async function () {
