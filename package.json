@@ -14,7 +14,7 @@
         "aks": "bin/aks.js"
     },
     "dependencies": {
-        "cli-table3": "^0.6.0",
+        "cli-table3": "^0.6.2",
         "is-in-subnet": "^4.0.1",
         "is-ip": "^4.0.0",
         "is-online": "^10.0.0",
