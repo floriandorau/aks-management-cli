@@ -1,11 +1,10 @@
-import publicIp from 'public-ip';
+import { publicIpv4 } from 'public-ip';
 
 export default {
     command: 'show-current',
     desc: 'Prints your current public ip address',
     handler: () => {
-        publicIp
-            .v4()
+        publicIpv4()
             .then((currentIp) =>
                 console.log(`Current public ip address is: '${currentIp}'`)
             )
