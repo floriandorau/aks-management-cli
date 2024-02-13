@@ -16,7 +16,7 @@
     "dependencies": {
         "cli-table3": "^0.6.3",
         "is-in-subnet": "^4.0.1",
-        "is-ip": "^5.0.0",
+        "is-ip": "^5.0.1",
         "is-online": "^10.0.0",
         "log-symbols": "^5.1.0",
         "ora": "^6.1.2",
